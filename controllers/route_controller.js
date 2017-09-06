@@ -1,5 +1,5 @@
 var express = require('express');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 var router = express.Router();
 var models = require('../models');
 var bodyParser = require('body-parser');
