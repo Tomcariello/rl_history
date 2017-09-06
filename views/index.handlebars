@@ -1,0 +1,58 @@
+<section class="main">
+  <div class='row'>
+    <div class="col-xs-12 sectionHeader">
+    </div>
+  </div>
+
+
+  <div class='row'>
+    <div class="col-xs-12 sectionHeader">
+      <div id="heroCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner" role="listbox">
+
+          {{#each dynamicData}}
+            <div class="item   {{#if @first}}active{{/if}}">
+              <img class="d-block img-fluid" src="{{this.imagepath}}" alt="First slide">
+              <div class="carousel-caption d-none d-md-block" style="height: {{this.quoteHeight}}px; width: {{this.quoteWidth}}px; {{this.vAlignment}}: 0; {{this.hAlignment}}: 0;">
+                <p>{{this.quote}}</p>
+                <p>{{this.quotesource}}</p>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row words">
+    <div class="col-xs-2"></div>
+    <div class="col-xs-2">
+      Anatomy
+    </div>
+    <div class="col-xs-1">
+      <i class="fa fa-asterisk" aria-hidden="true"></i>
+    </div>
+    <div class="col-xs-2">
+      Asana
+    </div>
+    <div class="col-xs-1">
+      <i class="fa fa-asterisk" aria-hidden="true"></i>
+    </div>
+    <div class="col-xs-2">
+      Awareness
+    </div>
+    <div class="col-xs-2"></div>
+  </div>
+
+
+  </div>
+</section>

@@ -1,0 +1,402 @@
+body {
+    width:100%;
+    height: 100%;
+    background-color: #f0f4f4;
+    margin: 0;
+    padding: 0;
+	font-family: 'Open Sans Condensed', sans-serif;
+}
+.container {
+	width: 100%;
+	background-repeat: repeat;
+	background-color: #f0f4f4;
+	background-size: 100%;
+	padding: 0px;
+}
+
+.container>.navbar-collapse, .container-fluid>.navbar-collapse {
+    border-bottom: 3px solid #ffffff;
+}
+
+h1 {
+	line-height: 0;
+	border-bottom: none;
+}
+
+a {
+	text-decoration: none;
+	color:#20acad;
+}
+
+a:focus, a:hover {
+	text-decoration: underline;
+	color:#000000;
+}
+
+.navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
+    color: #3e3f3a;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #3e3f3a;
+    background-color: transparent;
+	border-bottom: 2px solid #ffffff;
+}
+
+.navbar-settings {
+    position: fixed;
+    margin: 0;
+}
+.navbar .nav>li>a {
+	font-size: 20px;
+	padding-bottom: 0px
+ }
+.navbar .nav>li>a:hover {
+	border-bottom: 2px solid #ffffff;
+}
+
+
+ .navbar {
+    border-radius: 0px;
+  }
+  .navbar-default, .navbar-collapse {
+	  background-color: #f0f4f4;
+	  border-color: #f0f4f4;
+  }
+.navbar-default .navbar-brand {
+    color: #3e3f3a;
+}
+
+/*Profile Image properties*/
+.profile {
+	width: 100%;
+	display: block;
+	float: left;
+}
+
+.seperator {
+	border-left: 1px solid #cccccc;
+	border-right: 1px solid #cccccc;
+}
+.main {
+	max-width: 960px;
+}
+section {
+	clear: both;
+	max-width: 900px
+	min-height: 600px;
+	margin: auto;
+}
+
+.about {
+	max-width: 618px;
+	height: 10%0;
+	/*float: left;*/
+	padding: 15px 15px 50px 15px;
+	margin:20px 14px;
+}
+
+.aboutme {
+	width: 100%;
+}
+.connect {
+	width: 100%;
+	float: right;
+	padding: 0 15px 15px 15px;
+	margin: 0 8px 40px 0px;
+}
+.icons {
+	border-top: 1px solid #dddddd;
+	margin-top: 20px auto 0 auto;
+	margin-top: 10px;
+	padding: 7px 9px 0;
+}
+li img {
+	width: 50px;
+	margin: 0px;
+}
+
+li {
+	padding: 5px;
+	display: inline-block;	
+}
+
+footer {
+	clear: both;
+	background-color: #666666;
+	height: 60px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+.foot {
+	margin-top: 20px;
+	font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+	font-size: 12px;
+	text-align: center;
+}
+
+.pf1, .pf2, .pf3, .pf4, .pf5 {
+	float: left;
+	width: 260px;
+	margin-left: 20px;
+}
+
+.text1 {
+	position: relative;
+	bottom: 50px;
+	background-color: #4aaaa5;
+	text-align: center;
+	height: 35px;
+	width: 250px;
+    padding: 4px 0;
+    text-decoration: bold;
+    font-size: 20px;
+}
+
+img {
+	/*width: 85%;*/
+	/*margin: 0 35px;*/
+}
+
+.pf_container {
+	margin-top: 20px;
+}
+
+form > p {
+	margin: 0;
+}
+
+.formWarning {
+	border: 1px solid red;
+}
+
+#password, #email {
+	font-size: 22px;
+	margin-bottom: 20px;
+}
+
+.loginform {
+	text-align: center
+}
+
+
+textarea {
+	width: 100%;
+	height: 200px;
+}
+
+button {
+    background-color: #ffffff;
+    color: #263333;
+	border: 1px solid #cccccc;
+    margin: 10px 5px;
+    font-style: normal;
+    padding: 10px 20px;
+	font-size: 20px;
+}
+
+button:hover {
+	opacity: .8;
+}
+
+.panel-heading {
+	padding: 1px 15px;
+}
+.footer {
+	text-align: center;
+	margin-top: 25px;
+}
+
+.projecttitle {
+	font-size: 26px;
+}
+
+.projectinfo {
+	font-size: 16px;
+}
+
+.projectdisplay {
+	margin-bottom: 30px;
+	padding-bottom: 30px;
+	border-bottom: 1px solid gray;
+}
+
+.thumbnails {
+	padding: 4%;
+}
+
+#submitButton {
+	display: none;
+}
+.adminimage {
+	width: 40%;
+}
+#addnewproject {
+	font-size: 26px;
+	cursor: pointer;
+}
+.portfoliotitle {
+	text-align: center;
+}
+.portfoliotitletext {
+	font-size: 26px;
+}
+#AboutMeBio, #biotext {
+    width: 500px;
+    height: 500px;
+	font-size: 21px;
+}
+#AboutMeImage. #BioImage {
+	width: 90%;
+}
+.linktoportal {
+	padding: 10px 0;
+}
+.titleText {
+	font-size: 26px;
+	font-weight: bold;
+	margin: 5px;
+}
+#updatebio {
+	margin-bottom: 80px;
+}
+ .yogavideo {
+	 margin-bottom: 10px;
+     margin-right: 10%;
+     width: 40%;
+     float: left;
+     min-height: 300px;
+ }
+ .videoTitle {
+	 font-size: 20px;
+	 font-weight: bold;
+ }
+ .videoDescription {
+	 font-size: 18px;
+ }
+
+ .carousel-caption.d-none.d-md-block {
+    position: absolute;
+    z-index: 10;
+	background-color: #ffffff;
+    opacity: .9;
+	color: #000000;
+    text-align: center;
+	font-size: 22px;
+	left: unset;
+	right: unset;
+}
+
+/* Sets carousel slide area to white */
+.item.active {
+    background-color: #ffffff;
+}
+
+.words {
+    margin: 30px 0;
+    font-size: 33px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    padding: 10px 0;
+}
+
+.messageText {
+    font-size: 20px;
+}
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+
+hr {
+	color: #bdbcba;
+	border: 1px solid;
+}
+.description {
+	font-style: italic;
+	font-size: 20px;
+}
+
+.carouselPreview {
+   max-width: 300px;
+}
+
+#delete, #cancel {
+	background-color: #fd8585;
+}
+.formLabel {
+	line-height: 170%;
+	font-size: 22px;
+	margin-bottom: 10px;
+}
+.formInput {
+    width: 90%;
+    margin: 0 5px;
+    font-size: 20px;
+}
+.formInputLarge {
+    width: 90%;
+    margin: 0 5px;
+	font-size: 20px;
+	height: 200px;
+}
+#carouselPicture {
+    margin: 10px 0;
+}
+.fa-times-circle:before {
+    font-size: 22px;
+	color: #d25b5b;
+}
+.deleteColumn {
+	text-align: center;
+}
+.messageDisplay {
+	background-color: #ffffff;
+	border-radius: 10px;
+}
+.CMSImage {
+	max-width: 300px;
+}
+
+.VideoTitleText {
+	margin: 10px 0;
+	font-size: 26px;
+}
+.pageTitle {
+    background-color: #3e3f3a;
+    color: #f0f4f4;
+    font-size: 30px;
+    border-radius: 10px;
+	padding: 2px 10px;
+	margin-bottom: 20px;
+}
+
+.portalButton {
+    height: 150px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin: 10px 0;
+	text-align: center;
+	border-top: 0;
+}
+
+.messageSent {
+    font-size: 28px;
+    text-align: center;
+    color: red;
+    margin-bottom: 17px;
+}
+
+.hideElement {
+	display: none;
+}
+.fa-asterisk:before {
+     font-size: 20px;
+}
+.schedule {
+	padding-left: 10%;	
+}
