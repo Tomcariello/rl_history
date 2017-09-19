@@ -108,7 +108,7 @@ function hideSubmitButton() {
 }
 
 //Listen to update bio page submit button
-function validateUpdateBioForm(event) {
+function validateUpdateAboutMeForm(event) {
 
 	var aboutmeFormattedData = $('#summernoteAboutMe').summernote('code');
 	var aboutmeEncodedData = encodeURI(aboutmeFormattedData);
@@ -116,7 +116,7 @@ function validateUpdateBioForm(event) {
 	var bioFormattedData = $('#summernoteBio').summernote('code');
 	var bioEncodedData = encodeURI(bioFormattedData);
 
-	$("#AboutMeBio").val(aboutmeEncodedData);
+	$("#AboutMeText").val(aboutmeEncodedData);
 	$("#biotext").val(bioEncodedData);
 
 	return true;

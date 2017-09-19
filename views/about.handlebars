@@ -1,47 +1,24 @@
 <section class="main">
-  <div class='row'>
-    <div class="col-xs-12 pageTitle">
-      Teaching Style
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class="col-sm-12 col-md-7">
-      <p>
-        {{{dynamicData.about}}}
-      </p>
-    </div>
-
-    <div class="col-md-5">
-      <div>
-          <img class="profile" src="{{dynamicData.aboutimage}}" alt="">
-      </div>
-    </div>
-  </div>
-
-
-  <div class='row'>
-    <div class="col-xs-12 pageTitle">
-      Bio
-    </div>
-  </div>
-
-  <div class='row'>
-
-    <div class="col-sm-12 col-md-5">
-      <div>
-          <img class="profile" src="{{dynamicData.bioimage}}" alt="">
+  {{#each dynamicData}}
+    <div class='row'>
+      <div class="col-xs-12 pageTitle">
+        {{{this.header}}}
       </div>
     </div>
 
-    <div class="col-sm-12 col-md-7">
-      <p>
-        {{{dynamicData.bio}}}
-      </p>
+    <div class='row'>
+      <div class="col-sm-12 col-md-7">
+        <p>
+          {{{this.elementtext}}}
+        </p>
+      </div>
+
+      <div class="col-md-5">
+        <div>
+            <img class="profile" src="{{this.elementimage}}" alt="">
+        </div>
+      </div>
     </div>
+  {{/each}}
 
-
-
-
-  </div>
 </section>

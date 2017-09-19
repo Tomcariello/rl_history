@@ -40,19 +40,15 @@ router.get('/index', function(req, res) {
 });
 
 router.get('/about', function(req, res) {
-    models.AboutMe.findOne({
-    where: {id: 1}
-  })
+    models.AboutMe.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data}
 
+    //Loop through each returned object & prepare them all
+    
     //decode About data for proper rendering
-    var decodeAbout = decodeURIComponent(payload.dynamicData.about);
-    payload.dynamicData.about = decodeAbout;
-
-    //decode Bio data for proper rendering
-    var decodeBio = decodeURIComponent(payload.dynamicData.bio);
-    payload.dynamicData.bio = decodeBio;
+    var decodeElementText = decodeURIComponent(payload.dynamicData.elementtext);
+    payload.dynamicData.elementtext = decodeElementText;
 
     //Add administrator credential to the created object
     if (req.user) {
@@ -60,43 +56,6 @@ router.get('/about', function(req, res) {
     }
 
     res.render('about', {dynamicData: payload.dynamicData});
-  })
-});
-
-router.get('/videos', function (req, res) {
-  //pull video data from database
-  models.Videos.findAll({})
-  .then(function(data) {
-    var payload = {dynamicData: data}
-
-    //Add administrator credential to the created object
-    if (req.user) {
-      payload.dynamicData["administrator"] = true;
-    }
-
-    res.render('videos', {dynamicData: payload.dynamicData});
-  })
-});
-
-router.get('/schedule', function (req, res) {
-  //res.render('schedule');
-
-  models.Schedule.findOne({
-    where: {id: 1}
-  })
-  .then(function(data) {
-    var payload = {dynamicData: data}
-
-    //decode data for proper rendering
-    var decodeSchedule = decodeURIComponent(payload.dynamicData.scheduletext);
-    payload.dynamicData.scheduletext = decodeSchedule;
-
-    //Add administrator credential to the created object
-    if (req.user) {
-      payload.dynamicData["administrator"] = true;
-    }
-
-    res.render('schedule', {dynamicData: payload.dynamicData});
   })
 });
 
@@ -150,22 +109,11 @@ router.get('/viewmessages', isLoggedIn, function(req, res) {
 
 router.get('/adminaboutme', isLoggedIn, function(req, res) {
   //Pull about me data from database
-  models.AboutMe.findOne({
-    where: {id: 1}
-  })
+  models.AboutMe.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
     res.render('adminaboutme', {dynamicData: payload.dynamicData});
-  })
-});
-
-router.get('/adminvideos', isLoggedIn, function(req, res) {
-  models.Videos.findAll({})
-  .then(function(data) {
-    var payload = {dynamicData: data}
-    payload.dynamicData["administrator"] = true;
-    res.render('adminvideos', {dynamicData: payload.dynamicData});
   })
 });
 
@@ -197,30 +145,6 @@ router.get('/admincarousel', isLoggedIn, function(req, res) {
   })
 
 });
-
-router.get('/adminschedule', isLoggedIn, function(req, res) {
-    models.Schedule.findOne({
-    where: {id: 1}
-  })
-  .then(function(data) {
-    var payload = {dynamicData: data};
-    payload.dynamicData["administrator"] = true;
-    res.render('adminschedule', {dynamicData: payload.dynamicData});
-  })
-});
-
-//Delete Video Object
-router.get('/deletevideos/:videoID', isLoggedIn, function(req, res) {
-
-  //Use Sequelize to find the relevant DB object
-  models.Videos.findOne({ where: {id: req.params.videoID} })
-  .then(function(id) {
-    //Delete the object
-    id.destroy();
-  }).then(function(){
-    res.redirect('../adminvideos');
-  })
-})
 
 //Delete Message
 router.get('/deletemessage/:messageId', isLoggedIn, function(req, res) {
@@ -299,7 +223,7 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
   
   //Previous settings. Used if not overwritten below.
   var bioImageToUpload = req.body.BioImage; //bio image was unchaged
-  var aboutMeImageToUpload = req.body.AboutMeImage; //bio image was unchaged
+  var aboutPageImageToUpload = req.body.aboutPageImage; //bio image was unchaged
 
   //Check if any image(s) wer uploaded
   if (typeof req.files !== "undefined") {
@@ -307,7 +231,7 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
     if (req.files.length == 1) {
 
       //If only image uploaded was for ABOUT ME
-      if (req.files[0].fieldname == "profilepicture") {
+      if (req.files[0].fieldname == "aboutmepicture") {
 
         //Process file being uploaded
         var fileName = req.files[0].originalname;
@@ -333,8 +257,8 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
             console.log("err is " + err);
           }
 
-          //Get S3 filepath & set it to aboutMeImageToUpload
-          aboutMeImageToUpload = data.Location
+          //Get S3 filepath & set it to aboutPageImageToUpload
+          aboutPageImageToUpload = data.Location
 
           var currentDate = new Date();
 
@@ -344,8 +268,8 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
           .then(function(id) {
             //Update the data
             id.updateAttributes({
-                about: req.body.AboutMeBio,
-                aboutimage: aboutMeImageToUpload,
+                about: req.body.AboutMeText,
+                aboutimage: aboutPageImageToUpload,
                 bio: req.body.biotext,
                 bioimage: bioImageToUpload,
                 updatedAt: currentDate
@@ -390,7 +314,7 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
           .then(function(id) {
             //Update the data
             id.updateAttributes({
-                about: req.body.AboutMeBio,
+                about: req.body.AboutMeText,
                 aboutimage: bioImageToUpload,
                 bio: req.body.biotext,
                 bioimage: bioImageToUpload,
@@ -446,8 +370,8 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
             console.log("err is " + err);
           }
 
-          //Get S3 filepath & set it to aboutMeImageToUpload
-          aboutMeImageToUpload = data.Location;
+          //Get S3 filepath & set it to aboutPageImageToUpload
+          aboutPageImageToUpload = data.Location;
 
           //Upload Bio image after About Me is done
           bios3.upload( bioparams, function(err, data) {
@@ -464,8 +388,8 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
             .then(function(id) {
               //Update the data
               id.updateAttributes({
-                  about: req.body.AboutMeBio,
-                  aboutimage: aboutMeImageToUpload,
+                  about: req.body.AboutMeText,
+                  aboutimage: aboutPageImageToUpload,
                   bio: req.body.biotext,
                   bioimage: bioImageToUpload,
                   updatedAt: currentDate
@@ -484,7 +408,7 @@ router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
       .then(function(id) {
         //Update the data
         id.updateAttributes({
-            about: req.body.AboutMeBio,
+            about: req.body.AboutMeText,
             bio: req.body.biotext,
             updatedAt: currentDate
         }).then(function(){

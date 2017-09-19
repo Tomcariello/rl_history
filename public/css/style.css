@@ -244,12 +244,12 @@ button:hover {
 .portfoliotitletext {
 	font-size: 26px;
 }
-#AboutMeBio, #biotext {
+#AboutMeText, #biotext {
     width: 500px;
     height: 500px;
 	font-size: 21px;
 }
-#AboutMeImage. #BioImage {
+#aboutPageImage. #BioImage {
 	width: 90%;
 }
 .linktoportal {
