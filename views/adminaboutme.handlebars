@@ -11,7 +11,7 @@
 
   {{#each dynamicData}}
 
-    <form enctype="multipart/form-data" action="updateAboutMe" onsubmit="return validateUpdateAboutMeForm()" method="POST"> 
+    <form enctype="multipart/form-data" action="updateAboutMe/{{this.id}}" onsubmit="return validateUpdateAboutMeForm({{this.id}})" method="POST"> 
 
       <div class='row'>
         <div class="col-sm-12">
@@ -35,6 +35,16 @@
           </div>
         </div>
       </div>
+      <div>
+        <button type="submit" id="update">Update</button>
+        <a href="deleteCarousel/{{this.id}}">
+           <button type="button" id="delete">Delete</button>
+        </a>
+      </div>
+    
+    
+    
+    
     </form>
   {{/each}}
 
@@ -64,6 +74,17 @@
         $('#summernoteAboutMe' + summerNoteID).summernote('code', decodedTextContent);
       })      
     });
+
+    //Listen to update bio page submit button
+    function validateUpdateAboutMeForm(event) {
+
+      var aboutmeFormattedData = $('#summernoteAboutMe' + event).summernote('code');
+      var aboutmeEncodedData = encodeURI(aboutmeFormattedData);
+
+      $("#AboutMeText" + event).val(aboutmeEncodedData);
+
+      return true;
+    }
   </script>
 
 </section>

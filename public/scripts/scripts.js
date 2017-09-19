@@ -107,21 +107,6 @@ function hideSubmitButton() {
 	$("#submitButton").css({"display":"none"});	
 }
 
-//Listen to update bio page submit button
-function validateUpdateAboutMeForm(event) {
-
-	var aboutmeFormattedData = $('#summernoteAboutMe').summernote('code');
-	var aboutmeEncodedData = encodeURI(aboutmeFormattedData);
-
-	var bioFormattedData = $('#summernoteBio').summernote('code');
-	var bioEncodedData = encodeURI(bioFormattedData);
-
-	$("#AboutMeText").val(aboutmeEncodedData);
-	$("#biotext").val(bioEncodedData);
-
-	return true;
-}
-
 //Listen to update schedule page submit button
 function validateUpdateScheduleForm(event) {
 

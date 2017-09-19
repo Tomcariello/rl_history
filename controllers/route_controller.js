@@ -219,203 +219,81 @@ router.post('/contact/message', function(req, res) {
 });
 
 //Process About Me update requests
-router.post('/updateAboutMe', isLoggedIn, upload.any(), function(req, res) {
+router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepicture'), function(req, res) {
   
+  var aboutMeTextPath = req.body.AboutMeText + req.params.aboutMeId
+  console.log(aboutMeTextPath);
+
   //Previous settings. Used if not overwritten below.
-  var bioImageToUpload = req.body.BioImage; //bio image was unchaged
-  var aboutPageImageToUpload = req.body.aboutPageImage; //bio image was unchaged
+  var aboutPageImageToUpload = req.body.aboutPageImage; 
 
   //Check if any image(s) wer uploaded
   if (typeof req.files !== "undefined") {
 
-    if (req.files.length == 1) {
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
 
-      //If only image uploaded was for ABOUT ME
-      if (req.files[0].fieldname == "aboutmepicture") {
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
 
-        //Process file being uploaded
-        var fileName = req.files[0].originalname;
-        var fileType = req.files[0].mimetype;
-        var stream = fs.createReadStream(req.files[0].path) //Create "stream" of the file
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
 
-        //Create Amazon S3 specific object
-        var s3 = new aws.S3();
-
-        var params = {
-          Bucket: S3_BUCKET,
-          Key: fileName, //This is what S3 will use to store the data uploaded.
-          Body: stream, //the actual *file* being uploaded
-          ContentType: fileType, //type of file being uploaded
-          ACL: 'public-read', //Set permissions so everyone can see the image
-          processData: false,
-          accessKeyId: S3_accessKeyId,
-          secretAccessKey: S3_secretAccessKey
-        }
-
-        s3.upload( params, function(err, data) {
-          if (err) {
-            console.log("err is " + err);
-          }
-
-          //Get S3 filepath & set it to aboutPageImageToUpload
-          aboutPageImageToUpload = data.Location
-
-          var currentDate = new Date();
-
-          //Use Sequelize to find the relevant DB object
-          models.AboutMe.findOne({ where: {id: 1} })
-          
-          .then(function(id) {
-            //Update the data
-            id.updateAttributes({
-                about: req.body.AboutMeText,
-                aboutimage: aboutPageImageToUpload,
-                bio: req.body.biotext,
-                bioimage: bioImageToUpload,
-                updatedAt: currentDate
-            }).then(function(){
-              res.redirect('../adminaboutme');
-            })
-          })
-        });
-      //If only image uploaded was for BIO
-      } else if (req.files[0].fieldname == "biopicture") {  
-        var fileName = req.files[0].originalname;
-        var fileType = req.files[0].mimetype;
-        var stream = fs.createReadStream(req.files[0].path) //Create "stream" of the file
-
-        //Create Amazon S3 specific object
-        var s3 = new aws.S3();
-
-        var params = {
-          Bucket: S3_BUCKET,
-          Key: fileName, //This is what S3 will use to store the data uploaded.
-          Body: stream, //the actual *file* being uploaded
-          ContentType: fileType, //type of file being uploaded
-          ACL: 'public-read', //Set permissions so everyone can see the image
-          processData: false,
-          accessKeyId: S3_accessKeyId,
-          secretAccessKey: S3_secretAccessKey
-        }
-
-        s3.upload( params, function(err, data) {
-          if (err) {
-            console.log("err is " + err);
-          }
-
-          //Get S3 filepath & set it to bioImageToUpload
-          bioImageToUpload = data.Location
-
-          var currentDate = new Date();
-
-          //Use Sequelize to find the relevant DB object
-          models.AboutMe.findOne({ where: {id: 1} })
-          
-          .then(function(id) {
-            //Update the data
-            id.updateAttributes({
-                about: req.body.AboutMeText,
-                aboutimage: bioImageToUpload,
-                bio: req.body.biotext,
-                bioimage: bioImageToUpload,
-                updatedAt: currentDate
-            }).then(function(){
-              res.redirect('../adminaboutme');
-            })
-          })
-        });
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
       }
-    } else if (req.files.length == 2){  //multiple files uploaded
-        var currentDate = new Date();
 
-        //Process files being uploaded
-        var aboutMefileName = req.files[0].originalname;
-        var aboutMefileType = req.files[0].mimetype;
-        var aboutMestream = fs.createReadStream(req.files[0].path)
+      //Get S3 filepath & set it to aboutPageImageToUpload
+      aboutPageImageToUpload = data.Location
 
-        var biofileName = req.files[1].originalname;
-        var biofileType = req.files[1].mimetype;
-        var biostream = fs.createReadStream(req.files[1].path)
-
-        //Create Amazon S3 specific objects
-        var aboutMes3 = new aws.S3();
-        var bios3 = new aws.S3();
-
-        //Create S3 objects
-        var aboutMeparams = {
-          Bucket: S3_BUCKET,
-          Key: aboutMefileName, //This is what S3 will use to store the data uploaded.
-          Body: aboutMestream, //the actual *file* being uploaded
-          ContentType: aboutMefileType, //type of file being uploaded
-          ACL: 'public-read', //Set permissions so everyone can see the image
-          processData: false,
-          accessKeyId: S3_accessKeyId,
-          secretAccessKey: S3_secretAccessKey
-        }
-
-        var bioparams = {
-          Bucket: S3_BUCKET,
-          Key: biofileName, //This is what S3 will use to store the data uploaded.
-          Body: biostream, //the actual *file* being uploaded
-          ContentType: biofileType, //type of file being uploaded
-          ACL: 'public-read', //Set permissions so everyone can see the image
-          processData: false,
-          accessKeyId: S3_accessKeyId,
-          secretAccessKey: S3_secretAccessKey
-        }
-
-        //Upload About Me image first
-        aboutMes3.upload( aboutMeparams, function(err, data) {
-          if (err) {
-            console.log("err is " + err);
-          }
-
-          //Get S3 filepath & set it to aboutPageImageToUpload
-          aboutPageImageToUpload = data.Location;
-
-          //Upload Bio image after About Me is done
-          bios3.upload( bioparams, function(err, data) {
-            if (err) {
-              console.log("err is " + err);
-            }
-
-            //Get S3 filepath & set it to bioImageToUpload
-            bioImageToUpload = data.Location
-
-            //Use Sequelize to find the relevant DB object
-            models.AboutMe.findOne({ where: {id: 1} })
-            
-            .then(function(id) {
-              //Update the data
-              id.updateAttributes({
-                  about: req.body.AboutMeText,
-                  aboutimage: aboutPageImageToUpload,
-                  bio: req.body.biotext,
-                  bioimage: bioImageToUpload,
-                  updatedAt: currentDate
-              }).then(function(){
-                res.redirect('../adminaboutme');
-              })
-            })
-          });
-        });
-    } else { //No images to upload, just update the text
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.AboutMe.findOne({ where: {id: 1} })
+      models.AboutMe.findOne({ where: {id: req.params.aboutMeId} })
       
       .then(function(id) {
         //Update the data
         id.updateAttributes({
-            about: req.body.AboutMeText,
-            bio: req.body.biotext,
+            elementtext: aboutMeTextPath,
+            elementimage: aboutPageImageToUpload,
+            header: req.body.header + req.params.aboutMeId,
+            // elementtextposition: elementtextposition,
             updatedAt: currentDate
         }).then(function(){
           res.redirect('../adminaboutme');
         })
       })
-    }
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.AboutMe.findOne({ where: {id: req.params.aboutMeId} })
+    
+    
+
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+          elementtext: aboutMeTextPath,
+          header: req.body.header + req.params.aboutMeId,
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminaboutme');
+      })
+    })
   }
 });
 
