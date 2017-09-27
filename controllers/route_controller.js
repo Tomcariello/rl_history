@@ -39,16 +39,16 @@ router.get('/index', function(req, res) {
   })
 });
 
-router.get('/about', function(req, res) {
-    models.AboutMe.findAll({ })
+router.get('/bio', function(req, res) {
+  models.AboutMe.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data}
 
-    //Loop through each returned object & prepare them all
-    
-    //decode About data for proper rendering
-    var decodeElementText = decodeURIComponent(payload.dynamicData.elementtext);
-    payload.dynamicData.elementtext = decodeElementText;
+    //Loop through each returned object & decode data for rendering
+    for (i=0; i < payload.dynamicData.length; i++) {
+      var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
+    }
 
     //Add administrator credential to the created object
     if (req.user) {
@@ -58,6 +58,23 @@ router.get('/about', function(req, res) {
     res.render('about', {dynamicData: payload.dynamicData});
   })
 });
+
+router.get('/publications', function(req, res) {
+  //Add administrator credential to the created object
+  // if (req.user) {
+  //   payload.dynamicData["administrator"] = true;
+  // }
+  res.render('publications');
+});
+
+router.get('/currentresearch', function(req, res) {
+  //Add administrator credential to the created object
+  // if (req.user) {
+  //   payload.dynamicData["administrator"] = true;
+  // }
+  res.render('currentresearch');
+});
+
 
 router.get('/contact', function(req, res) {
 
@@ -114,6 +131,26 @@ router.get('/adminaboutme', isLoggedIn, function(req, res) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
     res.render('adminaboutme', {dynamicData: payload.dynamicData});
+  })
+});
+
+router.get('/adminpublications', isLoggedIn, function(req, res) {
+  //Pull about me data from database
+  models.AboutMe.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data};
+    payload.dynamicData["administrator"] = true;
+    res.render('adminpublications', {dynamicData: payload.dynamicData});
+  })
+});
+
+router.get('/admincurrentresearch', isLoggedIn, function(req, res) {
+  //Pull about me data from database
+  models.AboutMe.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data};
+    payload.dynamicData["administrator"] = true;
+    res.render('admincurrentresearch', {dynamicData: payload.dynamicData});
   })
 });
 
@@ -221,13 +258,10 @@ router.post('/contact/message', function(req, res) {
 //Process About Me update requests
 router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepicture'), function(req, res) {
   
-  var aboutMeTextPath = req.body.AboutMeText + req.params.aboutMeId
-  console.log(aboutMeTextPath);
-
   //Previous settings. Used if not overwritten below.
   var aboutPageImageToUpload = req.body.aboutPageImage; 
 
-  //Check if any image(s) wer uploaded
+  //Check if any image(s) were uploaded
   if (typeof req.files !== "undefined") {
 
     //Process file being uploaded
@@ -265,11 +299,10 @@ router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepictu
       .then(function(id) {
         //Update the data
         id.updateAttributes({
-            elementtext: aboutMeTextPath,
-            elementimage: aboutPageImageToUpload,
-            header: req.body.header + req.params.aboutMeId,
-            // elementtextposition: elementtextposition,
-            updatedAt: currentDate
+          elementtext: req.body['AboutMeText' + req.params.aboutMeId],
+          header: req.body['AboutMeHeader' + req.params.aboutMeId],
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
         }).then(function(){
           res.redirect('../adminaboutme');
         })
@@ -281,15 +314,14 @@ router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepictu
     //Use Sequelize to find the relevant DB object
     models.AboutMe.findOne({ where: {id: req.params.aboutMeId} })
     
-    
-
     .then(function(id) {
       //Update the data
       id.updateAttributes({
-          elementtext: aboutMeTextPath,
-          header: req.body.header + req.params.aboutMeId,
-          // elementtextposition: elementtextposition,
-          updatedAt: currentDate
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['AboutMeText' + req.params.aboutMeId],
+        header: req.body['AboutMeHeader' + req.params.aboutMeId],
+        // elementtextposition: elementtextposition,
+        updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminaboutme');
       })
@@ -297,9 +329,9 @@ router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepictu
   }
 });
 
-//Process Schedule update requests
-router.post('/updateschedule', isLoggedIn, upload.single('schedulepicture'), function(req, res) {
-  var scheduleImageToUpload;
+//Process research update requests
+router.post('/updateresearch', isLoggedIn, upload.single('researchpicture'), function(req, res) {
+  var researchImageToUpload;
 
   //Check if image was upload & process it
   if (typeof req.file !== "undefined") {
@@ -328,65 +360,65 @@ router.post('/updateschedule', isLoggedIn, upload.single('schedulepicture'), fun
         console.log("err is " + err);
       }
 
-      //Get S3 filepath & set it to scheduleImageToUpload
-      scheduleImageToUpload = data.Location
+      //Get S3 filepath & set it to researchImageToUpload
+      researchImageToUpload = data.Location
 
     });
 
   } else { //image did not change, so maintain the old URL
-    scheduleImageToUpload = req.body.scheduleimage; 
+    researchImageToUpload = req.body.researchimage; 
   }
 
   //Use Sequelize to find the relevant DB object
-  models.Schedule.findOne({ where: {id: 1} })
+  models.research.findOne({ where: {id: 1} })
   
   .then(function(id) {
     var currentDate = new Date();
 
     //Update the data
     id.updateAttributes({
-        scheduletext: req.body.ScheduleText,
-        scheduleimage: scheduleImageToUpload,
+        researchtext: req.body.researchText,
+        researchimage: researchImageToUpload,
         updatedAt: currentDate
     }).then(function(){
-      res.redirect('../adminschedule');
+      res.redirect('../adminresearch');
     })
   })
 });
 
 
-router.post('/newvideo', isLoggedIn, function(req, res) {
+router.post('/newpublication', isLoggedIn, function(req, res) {
 
   var currentDate = new Date();
 
   //Use Sequelize to push to DB
-  models.Videos.create({
-      videoname: req.body.NewVideoName,
+  models.publications.create({
+      publicationname: req.body.NewpublicationName,
       description: req.body.NewDescription,
-      url: req.body.NewVideoURL,
+      url: req.body.NewpublicationURL,
       createdAt: currentDate,
       updatedAt: currentDate
   }).then(function(){
 
-    res.redirect('../adminvideos');
+    res.redirect('../adminpublications');
   })
 });
 
-router.post('/updatevideo', isLoggedIn, function(req, res) {
+router.post('/updatepublication', isLoggedIn, function(req, res) {
   var currentDate = new Date();
 
   //Use Sequelize to find the relevant DB object
-  models.Videos.findOne({ where: {id: req.body.dbid} })
+  models.publications.findOne({ where: {id: req.body.dbid} })
 
   .then(function(id) {
     //Update the data
     id.updateAttributes({
-        videoname: req.body.videoname,
+        publicationname: req.body.publicationname,
         description: req.body.description,
         url: req.body.url,
         updatedAt: currentDate
     }).then(function(){
-      res.redirect('../adminvideos');
+      res.redirect('../adminpublications');
     })
   })
 });
