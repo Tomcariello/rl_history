@@ -4,7 +4,8 @@ body {
     background-color: #ffffff;
     margin: 0;
     padding: 0;
-	font-family: 'Open Sans Condensed', sans-serif;
+	/* font-family: 'Open Sans Condensed', sans-serif; */
+	font-family: "Unna";
 }
 .container {
 	width: 100%;
@@ -25,7 +26,7 @@ h1 {
 
 a {
 	text-decoration: none;
-	color:#20acad;
+	color:#000000;
 }
 
 a:focus, a:hover {
@@ -213,17 +214,19 @@ textarea {
 }
 
 button {
-    background-color: #ffffff;
+	background-color: #ffffff;
     color: #263333;
-	border: 1px solid #cccccc;
-    margin: 10px 5px;
+    border: 2px solid #000000;
+    margin: 5px;
     font-style: normal;
-    padding: 10px 20px;
-	font-size: 20px;
+    padding: 7px 35px;
+    font-size: 15px;
+    font-family: "Unna";
 }
 
 button:hover {
-	opacity: .8;
+	background-color: #1c2018;
+    color: #fff;
 }
 
 .panel-heading {
@@ -282,7 +285,6 @@ button:hover {
 .titleText {
 	font-size: 26px;
 	font-weight: bold;
-	margin: 5px;
 }
 #updatebio {
 	margin-bottom: 80px;
@@ -351,6 +353,10 @@ hr {
 
 #delete, #cancel {
 	background-color: #fd8585;
+}
+
+#delete:hover, #cancel:hover {
+	background-color: #F70000;
 }
 .formLabel {
 	line-height: 170%;
@@ -421,7 +427,6 @@ hr {
     font-style: italic;
 }
 
-
 .portalButton {
     height: 150px;
     border: 1px solid black;
@@ -446,4 +451,45 @@ hr {
 }
 .schedule {
 	padding-left: 10%;	
+}
+#NewBody {
+    height: 300px;
+}
+input[name^=BioHeader] {
+	width: 100%;
+	/* To match the embedded row below */
+	margin-left: -15px;
+    margin-right: -15px;
+}
+.bioGroup {
+    margin-bottom: 12px;
+}
+.buttonRow {
+    margin-bottom: 20px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+.buttonCol {
+	margin-left: -15px;
+	margin-right: -15px;
+}
+.dropdown-item {
+	color: #000000;
+}
+
+.navbarNavDropdown {
+	left: 4;
+}
+
+
+.navbar-right .dropdown-menu {
+    left: auto;
+    right: auto;
+}
+
+.nav {
+    text-transform: inherit;
+}
+.paddedLinks {
+	padding-left: 5px;
 }

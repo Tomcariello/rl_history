@@ -40,7 +40,7 @@ router.get('/index', function(req, res) {
 });
 
 router.get('/bio', function(req, res) {
-  models.AboutMe.findAll({ })
+  models.Bio.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data}
 
@@ -55,7 +55,7 @@ router.get('/bio', function(req, res) {
       payload.dynamicData["administrator"] = true;
     }
 
-    res.render('about', {dynamicData: payload.dynamicData});
+    res.render('bio', {dynamicData: payload.dynamicData});
   })
 });
 
@@ -67,12 +67,24 @@ router.get('/publications', function(req, res) {
   res.render('publications');
 });
 
-router.get('/currentresearch', function(req, res) {
-  //Add administrator credential to the created object
-  // if (req.user) {
-  //   payload.dynamicData["administrator"] = true;
-  // }
-  res.render('currentresearch');
+router.get('/research', function(req, res) {
+  models.Research.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data}
+
+    //Loop through each returned object & decode data for rendering
+    for (i=0; i < payload.dynamicData.length; i++) {
+      var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
+    }
+
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
+
+    res.render('research', {dynamicData: payload.dynamicData});
+  })
 });
 
 
@@ -124,19 +136,19 @@ router.get('/viewmessages', isLoggedIn, function(req, res) {
   })
 });
 
-router.get('/adminaboutme', isLoggedIn, function(req, res) {
-  //Pull about me data from database
-  models.AboutMe.findAll({ })
+router.get('/adminbio', isLoggedIn, function(req, res) {
+  //Pull bio data from database
+  models.Bio.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
-    res.render('adminaboutme', {dynamicData: payload.dynamicData});
+    res.render('adminbio', {dynamicData: payload.dynamicData});
   })
 });
 
 router.get('/adminpublications', isLoggedIn, function(req, res) {
-  //Pull about me data from database
-  models.AboutMe.findAll({ })
+  //Pull bio data from database
+  models.Bio.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
@@ -144,13 +156,13 @@ router.get('/adminpublications', isLoggedIn, function(req, res) {
   })
 });
 
-router.get('/admincurrentresearch', isLoggedIn, function(req, res) {
-  //Pull about me data from database
-  models.AboutMe.findAll({ })
+router.get('/adminresearch', isLoggedIn, function(req, res) {
+  //Pull research data from database
+  models.Research.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
-    res.render('admincurrentresearch', {dynamicData: payload.dynamicData});
+    res.render('adminresearch', {dynamicData: payload.dynamicData});
   })
 });
 
@@ -209,7 +221,31 @@ router.get('/deleteCarousel/:carouselId', isLoggedIn, function(req, res) {
   })
 })
 
+//Delete Bio Object
+router.get('/deleteBio/:bioId', isLoggedIn, function(req, res) {
+  
+  //Use Sequelize to find the relevant DB object
+  models.Bio.findOne({ where: {id: req.params.bioId} })
+  .then(function(id) {
+    //Delete the object
+    id.destroy();
+  }).then(function(){
+    res.redirect('../adminbio');
+  })
+})
 
+//Delete Research Object
+router.get('/deleteResearch/:researchId', isLoggedIn, function(req, res) {
+  
+  //Use Sequelize to find the relevant DB object
+  models.Research.findOne({ where: {id: req.params.researchId} })
+  .then(function(id) {
+    //Delete the object
+    id.destroy();
+  }).then(function(){
+    res.redirect('../adminresearch');
+  })
+})
 
 //===============================================
 //=====POST routes to record to the database=====
@@ -255,11 +291,11 @@ router.post('/contact/message', function(req, res) {
   })
 });
 
-//Process About Me update requests
-router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepicture'), function(req, res) {
+//Process Bio update requests
+router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), function(req, res) {
   
   //Previous settings. Used if not overwritten below.
-  var aboutPageImageToUpload = req.body.aboutPageImage; 
+  var bioPageImageToUpload = req.body.bioPageImage; 
 
   //Check if any image(s) were uploaded
   if (typeof req.files !== "undefined") {
@@ -288,23 +324,23 @@ router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepictu
         console.log("err is " + err);
       }
 
-      //Get S3 filepath & set it to aboutPageImageToUpload
-      aboutPageImageToUpload = data.Location
+      //Get S3 filepath & set it to bioPageImageToUpload
+      bioPageImageToUpload = data.Location
 
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.AboutMe.findOne({ where: {id: req.params.aboutMeId} })
+      models.Bio.findOne({ where: {id: req.params.bioId} })
       
       .then(function(id) {
         //Update the data
         id.updateAttributes({
-          elementtext: req.body['AboutMeText' + req.params.aboutMeId],
-          header: req.body['AboutMeHeader' + req.params.aboutMeId],
+          elementtext: req.body['BioText' + req.params.bioId],
+          header: req.body['BioHeader' + req.params.bioId],
           // elementtextposition: elementtextposition,
           updatedAt: currentDate
         }).then(function(){
-          res.redirect('../adminaboutme');
+          res.redirect('../adminbio');
         })
       })
     });
@@ -312,29 +348,31 @@ router.post('/updateAboutMe/:aboutMeId', isLoggedIn, upload.single('aboutmepictu
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.AboutMe.findOne({ where: {id: req.params.aboutMeId} })
+    models.Bio.findOne({ where: {id: req.params.bioId} })
     
     .then(function(id) {
       //Update the data
       id.updateAttributes({
         // optdes = req.body['optiondes' + optcount]
-        elementtext: req.body['AboutMeText' + req.params.aboutMeId],
-        header: req.body['AboutMeHeader' + req.params.aboutMeId],
+        elementtext: req.body['BioText' + req.params.bioId],
+        header: req.body['BioHeader' + req.params.bioId],
         // elementtextposition: elementtextposition,
         updatedAt: currentDate
       }).then(function(){
-        res.redirect('../adminaboutme');
+        res.redirect('../adminbio');
       })
     })
   }
 });
 
-//Process research update requests
-router.post('/updateresearch', isLoggedIn, upload.single('researchpicture'), function(req, res) {
-  var researchImageToUpload;
+//Process Research update requests
+router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpicture'), function(req, res) {
+  
+  //Previous settings. Used if not overwritten below.
+  var researchPageImageToUpload = req.body.researchPageImage; 
 
-  //Check if image was upload & process it
-  if (typeof req.file !== "undefined") {
+  //Check if any image(s) were uploaded
+  if (typeof req.files !== "undefined") {
 
     //Process file being uploaded
     var fileName = req.file.originalname;
@@ -353,37 +391,52 @@ router.post('/updateresearch', isLoggedIn, upload.single('researchpicture'), fun
       processData: false,
       accessKeyId: S3_accessKeyId,
       secretAccessKey: S3_secretAccessKey
-     }
+    }
 
     s3.upload( params, function(err, data) {
       if (err) {
         console.log("err is " + err);
       }
 
-      //Get S3 filepath & set it to researchImageToUpload
-      researchImageToUpload = data.Location
+      //Get S3 filepath & set it to researchPageImageToUpload
+      researchPageImageToUpload = data.Location
 
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Research.findOne({ where: {id: req.params.researchId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['ResearchText' + req.params.researchId],
+          header: req.body['ResearchHeader' + req.params.researchId],
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminresearch');
+        })
+      })
     });
-
-  } else { //image did not change, so maintain the old URL
-    researchImageToUpload = req.body.researchimage; 
-  }
-
-  //Use Sequelize to find the relevant DB object
-  models.research.findOne({ where: {id: 1} })
-  
-  .then(function(id) {
+  } else { //No image to upload, just update the text
     var currentDate = new Date();
 
-    //Update the data
-    id.updateAttributes({
-        researchtext: req.body.researchText,
-        researchimage: researchImageToUpload,
+    //Use Sequelize to find the relevant DB object
+    models.Research.findOne({ where: {id: req.params.researchId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['ResearchText' + req.params.researchId],
+        header: req.body['ResearchHeader' + req.params.researchId],
+        // elementtextposition: elementtextposition,
         updatedAt: currentDate
-    }).then(function(){
-      res.redirect('../adminresearch');
+      }).then(function(){
+        res.redirect('../adminresearch');
+      })
     })
-  })
+  }
 });
 
 
@@ -474,7 +527,7 @@ router.post('/newCarousel', isLoggedIn, upload.single('carouselPicture'), functi
     });
   });
 
-  //This can likely be deleted since uploading an image is a requirement for a new carousel
+  //Only used if no image loaded
   } else {
     carouselImageToUpload = req.body.carouselImage; //carousel image was unchanged
 
@@ -493,6 +546,136 @@ router.post('/newCarousel', isLoggedIn, upload.single('carouselPicture'), functi
         quoteHeight: req.body.newQuoteHeight
     }).then(function(){
       res.redirect('../admincarousel');
+    })
+  }
+});
+
+router.post('/newBio', isLoggedIn, upload.single('bioPicture'), function(req, res) {
+  
+  var bioImageToUpload;
+
+  //Check if image was upload & process it
+  if (typeof req.file !== "undefined") {
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+      }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to bioImageToUpload
+      bioImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to push to DB
+      models.Bio.create({
+          elementimage: bioImageToUpload,
+          header: req.body.NewHeader,
+          elementtext: req.body.NewBody,
+          createdAt: currentDate,
+          updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminbio');
+      });
+    });
+  //only used if no picture uploaded
+  } else {
+    bioImageToUpload = req.body.bioImage; //carousel image was unchanged
+
+    var currentDate = new Date();
+
+    //Use Sequelize to push to DB
+    models.Bio.create({
+      elementimage: bioImageToUpload,
+      header: req.body.NewHeader,
+      elementtext: req.body.NewBody,
+      createdAt: currentDate,
+      updatedAt: currentDate
+    }).then(function(){
+      res.redirect('../adminbio');
+    })
+  }
+});
+
+router.post('/newResearch', isLoggedIn, upload.single('researchPicture'), function(req, res) {
+  
+  var researchImageToUpload;
+
+  //Check if image was upload & process it
+  if (typeof req.file !== "undefined") {
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+      }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to researchImageToUpload
+      researchImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to push to DB
+      models.Research.create({
+          elementimage: researchImageToUpload,
+          header: req.body.NewHeader,
+          elementtext: req.body.NewBody,
+          createdAt: currentDate,
+          updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminresearch');
+      });
+    });
+  //only used if no picture uploaded
+  } else {
+    researchImageToUpload = req.body.researchImage; //carousel image was unchanged
+
+    var currentDate = new Date();
+
+    //Use Sequelize to push to DB
+    models.Research.create({
+      elementimage: researchImageToUpload,
+      header: req.body.NewHeader,
+      elementtext: req.body.NewBody,
+      createdAt: currentDate,
+      updatedAt: currentDate
+    }).then(function(){
+      res.redirect('../adminresearch');
     })
   }
 });

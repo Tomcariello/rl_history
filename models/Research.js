@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var AboutMe = sequelize.define('AboutMe', {
+  var Research = sequelize.define('Research', {
     header: DataTypes.STRING,
     elementtext: DataTypes.STRING,
     elementimage: DataTypes.STRING,
@@ -12,5 +12,5 @@ module.exports = function(sequelize, DataTypes) {
     },
   freezeTableName: true
   });
-  return AboutMe;
+  return Research;
 };

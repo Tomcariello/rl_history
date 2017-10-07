@@ -1,0 +1,152 @@
+<section class="main">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+
+  <div class='row pageTitle bottomBorder'>
+    <div class="col-sm-11">
+        Current Research Entries
+    </div>
+    <div class="col-sm-1">
+      <i class="fa fa-plus-square" id="addnewresearch"></i>
+    </div>
+  </div>
+
+  {{#each dynamicData}}
+
+    <form enctype="multipart/form-data" action="updateResearch/{{this.id}}" onsubmit="return validateUpdateResearchForm({{this.id}})" method="POST"> 
+
+      <div class='row researchGroup'>
+        <div class="col-sm-2">
+          <span class="titleText">Headline:</span>
+        </div>
+        <div class="col-sm-7">
+            <span class="titleText">
+              <input type="text" id="ResearchHeader{{this.id}}" name="ResearchHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </span>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="hideElement adminTextArea col-md-7">
+          <textarea rows="4" cols="50" id="ResearchText{{this.id}}" name="ResearchText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+        </div>
+
+        <div class="col-sm-2">
+          <span class="titleText">Body:</span>
+        </div>
+        <div class="col-md-7">
+          <div class="row">
+            <div id="summernoteResearch{{this.id}}" data-id={{this.id}}>
+            </div>
+          </div>
+        </div>
+        <div class="adminImageArea col-md-3">
+          Upload Image:
+          <img class='CMSImage' src="{{this.elementimage}}">
+          <input type="file" name="researchpicture{{this.id}}" id="researchpicture{{this.id}}">
+          <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+        </div>
+      </div>
+      <div class="row buttonRow">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 buttonCol">
+          <button type="submit" id="update">Update</button>
+          <a href="deleteResearch/{{this.id}}">
+            <button type="button" id="delete">Delete</button>
+          </a>
+        </div>  
+      </div>
+    
+    </form>
+  {{/each}}
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header pageTitle">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          Add New Research Object
+        </div>
+        
+        <div class="modal-body">
+          <form enctype="multipart/form-data" action="newResearch" method="POST">
+            
+            <input type="file" name="researchPicture" id="researchPicture">
+            
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Headline: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Body: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <button type="submit" id="update">Submit</button>
+              <button type="cancel" id="cancel" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+ 
+ <script>
+    $(document).ready(function() {
+      
+      //loop through the DOM and create a summernote element for each object    
+      $('div[id^=summernote]').each(function() {
+        var summerNoteID = $(this).data("id");
+            
+        //Initialize Summernote
+        $('#summernoteResearch' + summerNoteID).summernote({
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read coded contents & decode them
+        var decodedTextContent = decodeURI( $("#ResearchText" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteResearch' + summerNoteID).summernote('code', decodedTextContent);
+      })      
+    });
+
+    //Listen to update research page submit button
+    function validateUpdateResearchForm(event) {
+
+      var researchFormattedData = $('#summernoteResearch' + event).summernote('code');
+      var researchEncodedData = encodeURI(researchFormattedData);
+
+      $("#ResearchText" + event).val(researchEncodedData);
+
+      return true;
+    }
+
+  	//Listen to trigger modal
+    $("#addnewresearch" ).click(function() {
+	  	$("#myModal").modal();
+	  });
+  </script>
+
+</section>

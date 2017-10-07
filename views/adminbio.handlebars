@@ -1,0 +1,152 @@
+<section class="main">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+
+  <div class='row pageTitle bottomBorder'>
+    <div class="col-sm-11">
+        Bio Entries
+    </div>
+    <div class="col-sm-1">
+      <i class="fa fa-plus-square" id="addnewbio"></i>
+    </div>
+  </div>
+
+  {{#each dynamicData}}
+
+    <form enctype="multipart/form-data" action="updateBio/{{this.id}}" onsubmit="return validateUpdateBioForm({{this.id}})" method="POST"> 
+
+      <div class='row bioGroup'>
+        <div class="col-sm-2">
+          <span class="titleText">Headline:</span>
+        </div>
+        <div class="col-sm-7">
+            <span class="titleText">
+              <input type="text" id="BioHeader{{this.id}}" name="BioHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </span>
+        </div>
+        <div class="col-sm-3">
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="hideElement adminTextArea col-md-7">
+          <textarea rows="4" cols="50" id="BioText{{this.id}}" name="BioText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+        </div>
+
+        <div class="col-sm-2">
+          <span class="titleText">Body:</span>
+        </div>
+        <div class="col-md-7">
+          <div class="row">
+            <div id="summernoteBio{{this.id}}" data-id={{this.id}}>
+            </div>
+          </div>
+        </div>
+        <div class="adminImageArea col-md-3">
+          Upload Image:
+          <img class='CMSImage' src="{{this.elementimage}}">
+          <input type="file" name="biopicture{{this.id}}" id="biopicture{{this.id}}">
+          <input type="hidden" name="bioPageImage{{this.id}}" id="bioPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+        </div>
+      </div>
+      <div class="row buttonRow">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 buttonCol">
+          <button type="submit" id="update">Update</button>
+          <a href="deleteBio/{{this.id}}">
+            <button type="button" id="delete">Delete</button>
+          </a>
+        </div>  
+      </div>
+    
+    </form>
+  {{/each}}
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header pageTitle">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          Add New Bio Object
+        </div>
+        
+        <div class="modal-body">
+          <form enctype="multipart/form-data" action="newBio" method="POST">
+            
+            <input type="file" name="bioPicture" id="bioPicture">
+            
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Headline: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Body: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <button type="submit" id="update">Submit</button>
+              <button type="cancel" id="cancel" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+ 
+ <script>
+    $(document).ready(function() {
+      
+      //loop through the DOM and create a summernote element for each object    
+      $('div[id^=summernote]').each(function() {
+        var summerNoteID = $(this).data("id");
+            
+        //Initialize Summernote
+        $('#summernoteBio' + summerNoteID).summernote({
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read coded contents & decode them
+        var decodedTextContent = decodeURI( $("#BioText" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteBio' + summerNoteID).summernote('code', decodedTextContent);
+      })      
+    });
+
+    //Listen to update bio page submit button
+    function validateUpdateBioForm(event) {
+
+      var bioFormattedData = $('#summernoteBio' + event).summernote('code');
+      var bioEncodedData = encodeURI(bioFormattedData);
+
+      $("#BioText" + event).val(bioEncodedData);
+
+      return true;
+    }
+
+  	//Listen to trigger modal
+    $("#addnewbio" ).click(function() {
+	  	$("#myModal").modal();
+	  });
+  </script>
+
+</section>

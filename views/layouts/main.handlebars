@@ -38,18 +38,36 @@
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="nav navbar-nav">
-             </ul>
+            </ul>
               
             <ul class="nav navbar-nav navbar-right">
               {{#if dynamicData.administrator}}
-                <li><a href="/adminportal" class="navbarLinks">Admin</a></li>
+                <li>
+                  <a href="/adminportal" class="navbarLinks">
+                    Admin
+                  </a>
+                </li>
               {{/if}}
 
-              <li><a href="/bio" class="navbarLinks">Bio</a></li>
-              <li><a href="/publications" class="navbarLinks">Publications</a></li>
-              <li><a href="/CurrentResearch" class="navbarLinks">Current Research</a></li>
+              <li>
+                <a href="/bio" class="navbarLinks">
+                  Bio
+                </a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Publications
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <a href="/articles" class="navbarLinks paddedLinks">Articles</a><br>
+                  <a href="/bookreviews" class="navbarLinks paddedLinks">Book Reviews</a>
+                </div>
+              </li>
+
+
+              <li><a href="/Research" class="navbarLinks">Current Research</a></li>
               <li><a href="/contact" class="navbarLinks">Contact</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
