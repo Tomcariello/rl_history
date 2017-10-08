@@ -14,44 +14,118 @@
 
   {{#each dynamicData}}
 
-    <form enctype="multipart/form-data" action="updateAboutMe/{{this.id}}" onsubmit="return validateUpdateAboutMeForm({{this.id}})" method="POST"> 
+    <form enctype="multipart/form-data" action="updatePublication/{{this.id}}" onsubmit="return validateUpdatePublicationForm({{this.id}})" method="POST"> 
 
-      <div class='row aboutMeGroup'>
-        <div class="col-sm-12">
-          <span class="titleText">Header: 
-            <input type="text" id="AboutMeHeader{{this.id}}" name="AboutMeHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+      <div class='row publicationGroup'>
+        <div class="col-sm-2">
+          <span class="titleText">Headline:</span>
+        </div>
+        <div class="col-sm-7">
+            <span class="titleText">
+              <input type="text" id="PublicationHeader{{this.id}}" name="PublicationHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </span>
+        </div>
+        <div class="col-sm-3">
         </div>
       </div>  
 
       <div class="row">
-        <div class="adminImageArea col-md-5">
-          <img class='CMSImage' src="{{this.elementimage}}">
-          <input type="file" name="aboutmepicture{{this.id}}" id="aboutmepicture{{this.id}}">
-          <input type="hidden" name="aboutPageImage{{this.id}}" id="aboutPageImage{{this.id}}" value="{{this.elementimage}}"/> 
-        </div>
         <div class="hideElement adminTextArea col-md-7">
-          <textarea rows="4" cols="50" id="AboutMeText{{this.id}}" name="AboutMeText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+          <textarea rows="4" cols="50" id="PublicationText{{this.id}}" name="PublicationText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+        </div>
+
+        <div class="col-sm-2">
+          <span class="titleText">Body:</span>
         </div>
         <div class="col-md-7">
           <div class="row">
-            <div id="summernoteAboutMe{{this.id}}" data-id={{this.id}}>
+            <div id="summernotePublication{{this.id}}" data-id={{this.id}}>
             </div>
           </div>
         </div>
+        <div class="adminImageArea col-md-3">
+          Upload Image:
+          <img class='CMSImage' src="{{this.elementimage}}">
+          <input type="file" name="publicationpicture{{this.id}}" id="publicationpicture{{this.id}}">
+          <input type="hidden" name="publicationPageImage{{this.id}}" id="publicationPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+        </div>
       </div>
-      <div>
-        <button type="submit" id="update">Update</button>
-        <a href="deleteCarousel/{{this.id}}">
-           <button type="button" id="delete">Delete</button>
-        </a>
+      
+      <div class="col-sm-2">
+          <span class="titleText">Type:</span>
       </div>
-    
-    
-    
-    
+      <div class="col-xs-7">
+        <select class="formInput" id="category{{this.id}}" name="category{{this.id}}">
+          <option value="article" {{#if this.article}} selected{{/if}}>Article</option>
+          <option value="bookreview" {{#if this.bookreview}} selected{{/if}}>Book Review</option>
+        </select>
+      </div>
+      <div class="row buttonRow">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 buttonCol">
+          <button type="submit" id="update">Update</button>
+          <a href="deletePublication/{{this.id}}">
+            <button type="button" id="delete">Delete</button>
+          </a>
+        </div>  
+      </div>
+      
     </form>
   {{/each}}
 
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header pageTitle">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          Add New Publication
+        </div>
+        
+        <div class="modal-body">
+          <form enctype="multipart/form-data" action="newPublication" method="POST">
+            
+            <input type="file" name="publicationPicture" id="publicationPicture">
+            
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Headline: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Body: 
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Type: 
+              </div>
+              <div class="col-xs-8 ">
+                <select class="formInput" id="NewCategory" name="NewCategory">
+                  <option value="article" selected>Article</option>
+                  <option value="bookreview">Book Review</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <button type="submit" id="update">Submit</button>
+              <button type="cancel" id="cancel" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
  
  <script>
     $(document).ready(function() {
@@ -61,7 +135,7 @@
         var summerNoteID = $(this).data("id");
             
         //Initialize Summernote
-        $('#summernoteAboutMe' + summerNoteID).summernote({
+        $('#summernotePublication' + summerNoteID).summernote({
           toolbar: [
               ['style', ['bold', 'italic', 'underline', 'clear']],
               ['font', ['strikethrough', 'superscript', 'subscript']],
@@ -72,23 +146,28 @@
         });
 
         //Read coded contents & decode them
-        var decodedTextContent = decodeURI( $("#AboutMeText" + summerNoteID).val() );
+        var decodedTextContent = decodeURI( $("#PublicationText" + summerNoteID).val() );
 
         //Insert decoded text into the proper fields  
-        $('#summernoteAboutMe' + summerNoteID).summernote('code', decodedTextContent);
+        $('#summernotePublication' + summerNoteID).summernote('code', decodedTextContent);
       })      
     });
 
-    //Listen to update bio page submit button
-    function validateUpdateAboutMeForm(event) {
+    //Listen to update publication page submit button
+    function validateUpdatePublicationForm(event) {
 
-      var aboutmeFormattedData = $('#summernoteAboutMe' + event).summernote('code');
-      var aboutmeEncodedData = encodeURI(aboutmeFormattedData);
+      var publicationFormattedData = $('#summernotePublication' + event).summernote('code');
+      var publicationEncodedData = encodeURI(publicationFormattedData);
 
-      $("#AboutMeText" + event).val(aboutmeEncodedData);
+      $("#PublicationText" + event).val(publicationEncodedData);
 
       return true;
     }
+
+    //Listen to trigger modal
+    $("#addnewpublication" ).click(function() {
+	  	$("#myModal").modal();
+	  });
   </script>
 
 </section>

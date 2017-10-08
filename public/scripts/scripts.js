@@ -1,6 +1,8 @@
+var socialMediaExpanded = false;
+
 $( document ).ready(function() {
 
-	//Check form for contents before submitting
+	//Check contact form for contents before submitting
 	$('#contactSubmit').on('click',function() {
 		
 		if ($('#fname').val() != "") {
@@ -53,8 +55,22 @@ $( document ).ready(function() {
 		$("#myModal").modal();
 	});
 
+	//Listen for clicks on the social media button
+	$('#socialMediaParent').on('click', function() {
+		if (socialMediaExpanded == false) {
+			socialMediaExpanded = true;
+			$('#socialMediaLinks').fadeIn("slow")
+		} else {
+			socialMediaExpanded = false;
+			$('#socialMediaLinks').fadeOut("slow")
+		}
+		
+	})
+	
 
 });
+
+
 
 function clearFields() {
   //Clear fields on contact form

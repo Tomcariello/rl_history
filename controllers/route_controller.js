@@ -60,11 +60,23 @@ router.get('/bio', function(req, res) {
 });
 
 router.get('/publications', function(req, res) {
-  //Add administrator credential to the created object
-  // if (req.user) {
-  //   payload.dynamicData["administrator"] = true;
-  // }
-  res.render('publications');
+  models.Publications.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data}
+
+    //Loop through each returned object & decode data for rendering
+    for (i=0; i < payload.dynamicData.length; i++) {
+      var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
+    }
+
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
+
+    res.render('publications', {dynamicData: payload.dynamicData});
+  })
 });
 
 router.get('/research', function(req, res) {
@@ -148,10 +160,22 @@ router.get('/adminbio', isLoggedIn, function(req, res) {
 
 router.get('/adminpublications', isLoggedIn, function(req, res) {
   //Pull bio data from database
-  models.Bio.findAll({ })
+  models.Publications.findAll({ })
   .then(function(data) {
     var payload = {dynamicData: data};
     payload.dynamicData["administrator"] = true;
+
+    //Loop through each instance & add type for rendering in the CMS
+    for (i=0; i < payload.dynamicData.length; i++) {
+      //Check vertical alignment
+      if (payload.dynamicData[i].category == "article") {
+        payload.dynamicData[i]["article"] = true;
+      } else {
+        payload.dynamicData[i]["bookreview"] = true;
+      }
+    }
+
+
     res.render('adminpublications', {dynamicData: payload.dynamicData});
   })
 });
@@ -247,6 +271,18 @@ router.get('/deleteResearch/:researchId', isLoggedIn, function(req, res) {
   })
 })
 
+//Delete Publication Object
+router.get('/deletePublication/:publicationId', isLoggedIn, function(req, res) {
+  
+  //Use Sequelize to find the relevant DB object
+  models.Publications.findOne({ where: {id: req.params.publicationId} })
+  .then(function(id) {
+    //Delete the object
+    id.destroy();
+  }).then(function(){
+    res.redirect('../adminpublications');
+  })
+})
 //===============================================
 //=====POST routes to record to the database=====
 //===============================================
@@ -291,190 +327,138 @@ router.post('/contact/message', function(req, res) {
   })
 });
 
-//Process Bio update requests
-router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), function(req, res) {
+router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), function(req, res) {
   
-  //Previous settings. Used if not overwritten below.
-  var bioPageImageToUpload = req.body.bioPageImage; 
-
-  //Check if any image(s) were uploaded
-  if (typeof req.files !== "undefined") {
-
-    //Process file being uploaded
-    var fileName = req.file.originalname;
-    var fileType = req.file.mimetype;
-    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
-
-    //Create Amazon S3 specific object
-    var s3 = new aws.S3();
-
-    var params = {
-      Bucket: S3_BUCKET,
-      Key: fileName, //This is what S3 will use to store the data uploaded.
-      Body: stream, //the actual *file* being uploaded
-      ContentType: fileType, //type of file being uploaded
-      ACL: 'public-read', //Set permissions so everyone can see the image
-      processData: false,
-      accessKeyId: S3_accessKeyId,
-      secretAccessKey: S3_secretAccessKey
-    }
-
-    s3.upload( params, function(err, data) {
-      if (err) {
-        console.log("err is " + err);
-      }
-
-      //Get S3 filepath & set it to bioPageImageToUpload
-      bioPageImageToUpload = data.Location
-
-      var currentDate = new Date();
-
-      //Use Sequelize to find the relevant DB object
-      models.Bio.findOne({ where: {id: req.params.bioId} })
-      
-      .then(function(id) {
-        //Update the data
-        id.updateAttributes({
-          elementtext: req.body['BioText' + req.params.bioId],
-          header: req.body['BioHeader' + req.params.bioId],
-          // elementtextposition: elementtextposition,
+    var publicationImageToUpload;
+  
+    //Check if image was upload & process it
+    if (typeof req.file !== "undefined") {
+      //Process file being uploaded
+      var fileName = req.file.originalname;
+      var fileType = req.file.mimetype;
+      var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+  
+      //Create Amazon S3 specific object
+      var s3 = new aws.S3();
+  
+      var params = {
+        Bucket: S3_BUCKET,
+        Key: fileName, //This is what S3 will use to store the data uploaded.
+        Body: stream, //the actual *file* being uploaded
+        ContentType: fileType, //type of file being uploaded
+        ACL: 'public-read', //Set permissions so everyone can see the image
+        processData: false,
+        accessKeyId: S3_accessKeyId,
+        secretAccessKey: S3_secretAccessKey
+       }
+  
+      s3.upload( params, function(err, data) {
+        if (err) {
+          console.log("err is " + err);
+        }
+  
+        //Get S3 filepath & set it to publicationImageToUpload
+        publicationImageToUpload = data.Location
+  
+        var currentDate = new Date();
+  
+        //Use Sequelize to push to DB
+        models.Publications.create({
+          elementimage: publicationImageToUpload,
+          header: req.body.NewHeader,
+          elementtext: req.body.NewBody,
+          category: req.body.NewCategory,
+          createdAt: currentDate,
           updatedAt: currentDate
         }).then(function(){
-          res.redirect('../adminbio');
-        })
-      })
+          res.redirect('../adminpublications');
+      });
     });
-  } else { //No image to upload, just update the text
-    var currentDate = new Date();
-
-    //Use Sequelize to find the relevant DB object
-    models.Bio.findOne({ where: {id: req.params.bioId} })
+  
+    //Only used if no image loaded
+    } else {
+      publicationImageToUpload = req.body.publicationImage; //publication image was unchanged
+  
+      var currentDate = new Date();
+  
+      //Use Sequelize to push to DB
+      models.Publications.create({
+        elementimage: publicationImageToUpload,
+        header: req.body.NewHeader,
+        elementtext: req.body.NewBody,
+        category: req.body.NewCategory,
+        createdAt: currentDate,
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminpublications');
+      })
+    }
+  });
+  
+  router.post('/newBio', isLoggedIn, upload.single('bioPicture'), function(req, res) {
     
-    .then(function(id) {
-      //Update the data
-      id.updateAttributes({
-        // optdes = req.body['optiondes' + optcount]
-        elementtext: req.body['BioText' + req.params.bioId],
-        header: req.body['BioHeader' + req.params.bioId],
-        // elementtextposition: elementtextposition,
+    var bioImageToUpload;
+  
+    //Check if image was upload & process it
+    if (typeof req.file !== "undefined") {
+      //Process file being uploaded
+      var fileName = req.file.originalname;
+      var fileType = req.file.mimetype;
+      var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+  
+      //Create Amazon S3 specific object
+      var s3 = new aws.S3();
+  
+      var params = {
+        Bucket: S3_BUCKET,
+        Key: fileName, //This is what S3 will use to store the data uploaded.
+        Body: stream, //the actual *file* being uploaded
+        ContentType: fileType, //type of file being uploaded
+        ACL: 'public-read', //Set permissions so everyone can see the image
+        processData: false,
+        accessKeyId: S3_accessKeyId,
+        secretAccessKey: S3_secretAccessKey
+        }
+  
+      s3.upload( params, function(err, data) {
+        if (err) {
+          console.log("err is " + err);
+        }
+  
+        //Get S3 filepath & set it to bioImageToUpload
+        bioImageToUpload = data.Location
+  
+        var currentDate = new Date();
+  
+        //Use Sequelize to push to DB
+        models.Bio.create({
+            elementimage: bioImageToUpload,
+            header: req.body.NewHeader,
+            elementtext: req.body.NewBody,
+            createdAt: currentDate,
+            updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminbio');
+        });
+      });
+    //only used if no picture uploaded
+    } else {
+      bioImageToUpload = req.body.bioImage; //carousel image was unchanged
+  
+      var currentDate = new Date();
+  
+      //Use Sequelize to push to DB
+      models.Bio.create({
+        elementimage: bioImageToUpload,
+        header: req.body.NewHeader,
+        elementtext: req.body.NewBody,
+        createdAt: currentDate,
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminbio');
       })
-    })
-  }
-});
-
-//Process Research update requests
-router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpicture'), function(req, res) {
-  
-  //Previous settings. Used if not overwritten below.
-  var researchPageImageToUpload = req.body.researchPageImage; 
-
-  //Check if any image(s) were uploaded
-  if (typeof req.files !== "undefined") {
-
-    //Process file being uploaded
-    var fileName = req.file.originalname;
-    var fileType = req.file.mimetype;
-    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
-
-    //Create Amazon S3 specific object
-    var s3 = new aws.S3();
-
-    var params = {
-      Bucket: S3_BUCKET,
-      Key: fileName, //This is what S3 will use to store the data uploaded.
-      Body: stream, //the actual *file* being uploaded
-      ContentType: fileType, //type of file being uploaded
-      ACL: 'public-read', //Set permissions so everyone can see the image
-      processData: false,
-      accessKeyId: S3_accessKeyId,
-      secretAccessKey: S3_secretAccessKey
     }
-
-    s3.upload( params, function(err, data) {
-      if (err) {
-        console.log("err is " + err);
-      }
-
-      //Get S3 filepath & set it to researchPageImageToUpload
-      researchPageImageToUpload = data.Location
-
-      var currentDate = new Date();
-
-      //Use Sequelize to find the relevant DB object
-      models.Research.findOne({ where: {id: req.params.researchId} })
-      
-      .then(function(id) {
-        //Update the data
-        id.updateAttributes({
-          elementtext: req.body['ResearchText' + req.params.researchId],
-          header: req.body['ResearchHeader' + req.params.researchId],
-          // elementtextposition: elementtextposition,
-          updatedAt: currentDate
-        }).then(function(){
-          res.redirect('../adminresearch');
-        })
-      })
-    });
-  } else { //No image to upload, just update the text
-    var currentDate = new Date();
-
-    //Use Sequelize to find the relevant DB object
-    models.Research.findOne({ where: {id: req.params.researchId} })
-    
-    .then(function(id) {
-      //Update the data
-      id.updateAttributes({
-        // optdes = req.body['optiondes' + optcount]
-        elementtext: req.body['ResearchText' + req.params.researchId],
-        header: req.body['ResearchHeader' + req.params.researchId],
-        // elementtextposition: elementtextposition,
-        updatedAt: currentDate
-      }).then(function(){
-        res.redirect('../adminresearch');
-      })
-    })
-  }
-});
-
-
-router.post('/newpublication', isLoggedIn, function(req, res) {
-
-  var currentDate = new Date();
-
-  //Use Sequelize to push to DB
-  models.publications.create({
-      publicationname: req.body.NewpublicationName,
-      description: req.body.NewDescription,
-      url: req.body.NewpublicationURL,
-      createdAt: currentDate,
-      updatedAt: currentDate
-  }).then(function(){
-
-    res.redirect('../adminpublications');
-  })
-});
-
-router.post('/updatepublication', isLoggedIn, function(req, res) {
-  var currentDate = new Date();
-
-  //Use Sequelize to find the relevant DB object
-  models.publications.findOne({ where: {id: req.body.dbid} })
-
-  .then(function(id) {
-    //Update the data
-    id.updateAttributes({
-        publicationname: req.body.publicationname,
-        description: req.body.description,
-        url: req.body.url,
-        updatedAt: currentDate
-    }).then(function(){
-      res.redirect('../adminpublications');
-    })
-  })
-});
+  });
 
 router.post('/newCarousel', isLoggedIn, upload.single('carouselPicture'), function(req, res) {
 
@@ -680,6 +664,7 @@ router.post('/newResearch', isLoggedIn, upload.single('researchPicture'), functi
   }
 });
 
+//Process Carousel update requests
 router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), function(req, res) {
 
   var carouselImageToUpload;
@@ -756,6 +741,229 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
 
         }).then(function(){
         res.redirect('../admincarousel');
+      })
+    })
+  }
+});
+
+//Process Bio update requests
+router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), function(req, res) {
+  
+  //Previous settings. Used if not overwritten below.
+  var bioPageImageToUpload = req.body.bioPageImage; 
+
+  //Check if any image(s) were uploaded
+  if (typeof req.files !== "undefined") {
+
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to bioPageImageToUpload
+      bioPageImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Bio.findOne({ where: {id: req.params.bioId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['BioText' + req.params.bioId],
+          header: req.body['BioHeader' + req.params.bioId],
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminbio');
+        })
+      })
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.Bio.findOne({ where: {id: req.params.bioId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['BioText' + req.params.bioId],
+        header: req.body['BioHeader' + req.params.bioId],
+        // elementtextposition: elementtextposition,
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminbio');
+      })
+    })
+  }
+});
+
+//Process Research update requests
+router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpicture'), function(req, res) {
+  
+  //Previous settings. Used if not overwritten below.
+  var researchPageImageToUpload = req.body.researchPageImage; 
+
+  //Check if any image(s) were uploaded
+  if (typeof req.files !== "undefined") {
+
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to researchPageImageToUpload
+      researchPageImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Research.findOne({ where: {id: req.params.researchId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['ResearchText' + req.params.researchId],
+          header: req.body['ResearchHeader' + req.params.researchId],
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminresearch');
+        })
+      })
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.Research.findOne({ where: {id: req.params.researchId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['ResearchText' + req.params.researchId],
+        header: req.body['ResearchHeader' + req.params.researchId],
+        // elementtextposition: elementtextposition,
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminresearch');
+      })
+    })
+  }
+});
+
+//Process Publication update requests
+router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publicationpicture'), function(req, res) {
+  //Previous settings. Used if not overwritten below.
+  var publicationImageToUpload = req.body.publicationImage; 
+
+  //Check if any image(s) were uploaded
+  if (typeof req.files !== "undefined") {
+
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to publicationsImageToUpload
+      publicationsImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Publications.findOne({ where: {id: req.params.publicationsId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['PublicationText' + req.params.publicationId],
+          header: req.body['PublicationHeader' + req.params.publicationId],
+          category: req.body['category' + req.params.publicationId],
+          // elementtextposition: elementtextposition,
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminpublications');
+        })
+      })
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.Publications.findOne({ where: {id: req.params.publicationId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['PublicationText' + req.params.publicationId],
+        header: req.body['PublicationHeader' + req.params.publicationId],
+        category: req.body['category' + req.params.publicationId],
+        // elementtextposition: elementtextposition,
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminpublications');
       })
     })
   }

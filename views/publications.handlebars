@@ -1,20 +1,24 @@
 <section class="main">
-  <div class='row'>
-    <div class="col-sm-11 pageTitle">
-      Publications
-    </div>
-  </div>
-
-  <div class='row'>
-    <div class="col-sm-12">
-      <div>
-          <img class="profile" src="{{dynamicData.scheduleimage}}" alt="">
+  {{#each dynamicData}}
+    <div class='row'>
+      <div class="col-xs-12 pageTitle">
+        {{{this.header}}}
       </div>
     </div>
 
-    <div class="col-sm-12 schedule">
-        {{{dynamicData.scheduletext}}}
-    </div>
+    <div class='row'>
+      <div class="col-sm-12 col-md-9">
+        <p>
+          {{{this.elementtext}}}
+        </p>
+      </div>
 
-  </div>
+      <div class="col-md-3">
+        <div>
+            <img class="profile" src="{{this.elementimage}}" alt="">
+        </div>
+      </div>
+    </div>
+  {{/each}}
+
 </section>
