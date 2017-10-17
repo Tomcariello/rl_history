@@ -1,3 +1,4 @@
+// Files to configure Passport for session management
 var connection = require('../config/connection.js');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcryptjs');
