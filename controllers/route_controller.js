@@ -754,9 +754,6 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
 
   //Check if any image(s) were uploaded
   if (typeof req.file !== "undefined") {
-    console.log('***************************');
-    console.log('file uploaded...proceed');
-    console.log('***************************');
 
     //Process file being uploaded
     var fileName = req.file.originalname;
@@ -795,6 +792,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
         id.updateAttributes({
           elementtext: req.body['BioText' + req.params.bioId],
           header: req.body['BioHeader' + req.params.bioId],
+          elementimage: bioPageImageToUpload,
           // elementtextposition: elementtextposition,
           updatedAt: currentDate
         }).then(function(){
@@ -869,6 +867,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
         id.updateAttributes({
           elementtext: req.body['ResearchText' + req.params.researchId],
           header: req.body['ResearchHeader' + req.params.researchId],
+          elementimage: researchPageImageToUpload,
           // elementtextposition: elementtextposition,
           updatedAt: currentDate
         }).then(function(){
@@ -943,6 +942,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
           elementtext: req.body['PublicationText' + req.params.publicationId],
           header: req.body['PublicationHeader' + req.params.publicationId],
           category: req.body['category' + req.params.publicationId],
+          elementimage: publicationsImageToUpload,
           // elementtextposition: elementtextposition,
           updatedAt: currentDate
         }).then(function(){
