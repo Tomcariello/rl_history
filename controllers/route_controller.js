@@ -750,11 +750,14 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
 router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), function(req, res) {
   
   //Previous settings. Used if not overwritten below.
-  var bioPageImageToUpload = req.body.bioPageImage; 
+  var bioPageImageToUpload = req.body.['bioPageImage' + req.params.bioId]; 
 
   //Check if any image(s) were uploaded
   if (typeof req.files !== "undefined") {
-
+    console.log('***************************');
+    console.log('file uploaded...proceed');
+    console.log('***************************');
+    
     //Process file being uploaded
     var fileName = req.file.originalname;
     var fileType = req.file.mimetype;
