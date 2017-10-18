@@ -753,7 +753,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
   var bioPageImageToUpload = req.body['bioPageImage' + req.params.bioId]; 
 
   //Check if any image(s) were uploaded
-  if (typeof req.files !== "undefined") {
+  if (typeof req.file !== "undefined") {
     console.log('***************************');
     console.log('file uploaded...proceed');
     console.log('***************************');
@@ -900,7 +900,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
 //Process Publication update requests
 router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publicationpicture'), function(req, res) {
   //Previous settings. Used if not overwritten below.
-  var publicationImageToUpload = req.body.publicationImage; 
+  var publicationImageToUpload = req.body['publicationImage' + req.params.publicationId]; 
 
   //Check if any image(s) were uploaded
   if (typeof req.files !== "undefined") {
