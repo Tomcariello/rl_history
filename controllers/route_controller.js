@@ -95,6 +95,7 @@ router.get('/research', function(req, res) {
       payload.dynamicData["administrator"] = true;
     }
 
+    console.log(payload.dynamicData);
     res.render('research', {dynamicData: payload.dynamicData});
   })
 });
