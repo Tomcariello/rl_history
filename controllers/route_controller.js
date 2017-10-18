@@ -934,7 +934,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Publications.findOne({ where: {id: req.params.publicationsId} })
+      models.Publications.findOne({ where: {id: req.params.publicationId} })
       
       .then(function(id) {
         //Update the data
