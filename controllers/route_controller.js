@@ -828,7 +828,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
   var researchPageImageToUpload = req.body.researchPageImage; 
 
   //Check if any image(s) were uploaded
-  if (typeof req.files !== "undefined") {
+  if (typeof req.file !== "undefined") {
 
     //Process file being uploaded
     var fileName = req.file.originalname;
@@ -902,7 +902,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
   var publicationImageToUpload = req.body['publicationImage' + req.params.publicationId]; 
 
   //Check if any image(s) were uploaded
-  if (typeof req.files !== "undefined") {
+  if (typeof req.file !== "undefined") {
 
     //Process file being uploaded
     var fileName = req.file.originalname;
