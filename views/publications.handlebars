@@ -1,24 +1,52 @@
 <section class="main">
   {{#each dynamicData}}
-    <div class='row'>
-      <div class="col-xs-12 pageTitle">
-        {{{this.header}}}
-      </div>
-    </div>
 
-    <div class='row'>
-      <div class="col-sm-12 col-md-9">
-        <p>
-          {{{this.elementtext}}}
-        </p>
-      </div>
-
-      <div class="col-md-3">
-        <div>
-            <img class="profile" src="{{this.elementimage}}" alt="">
+    {{#if this.isArticle}}
+      <div class='row'>
+        <div class="col-xs-12 pageTitle">
+          {{{this.header}}}
         </div>
       </div>
-    </div>
+
+      <div class='row'>
+        <div class="col-sm-12 col-md-9">
+          <p>
+            {{{this.elementtext}}}
+          </p>
+        </div>
+
+        <div class="col-md-3">
+          <div>
+              <img class="profile" src="{{this.elementimage}}" alt="">
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  {{/each}}
+
+  {{#each dynamicData}}
+
+    {{#if this.isBookReview}}
+      <div class='row'>
+        <div class="col-xs-12 pageTitle">
+          {{{this.header}}}
+        </div>
+      </div>
+
+      <div class='row'>
+        <div class="col-sm-12 col-md-9">
+          <p>
+            {{{this.elementtext}}}
+          </p>
+        </div>
+
+        <div class="col-md-3">
+          <div>
+              <img class="profile" src="{{this.elementimage}}" alt="">
+          </div>
+        </div>
+      </div>
+    {{/if}}
   {{/each}}
 
 </section>

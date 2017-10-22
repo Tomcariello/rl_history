@@ -34,9 +34,9 @@ app.engine('handlebars', exphbs({
 
 app.set('view engine', 'handlebars');
 
-require('./config/passportConfig.js');
 
 //Passport configuration
+require('./config/passportConfig.js');
 require('./config/passportConfig.js')(passport);
 
 app.use(session({ secret: 'tomtest' })); // session secret

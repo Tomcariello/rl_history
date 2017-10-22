@@ -67,8 +67,16 @@ router.get('/publications', function(req, res) {
   .then(function(data) {
     var payload = {dynamicData: data}
 
-    //Loop through each returned object & decode data for rendering
+    //Loop through each returned object...
     for (i=0; i < payload.dynamicData.length; i++) {
+      //...& add element to indicate if it is a book review or article
+      if (payload.dynamicData[i].category == "article") {
+        payload.dynamicData[i].isArticle = true;
+      } else {
+        payload.dynamicData[i].isBookReview = true;
+      }
+      
+      //...& decode data for rendering
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
     }
@@ -78,6 +86,7 @@ router.get('/publications', function(req, res) {
       payload.dynamicData["administrator"] = true;
     }
 
+    // console.log(payload.dynamicData);
     res.render('publications', {dynamicData: payload.dynamicData});
   })
 });
@@ -396,6 +405,10 @@ router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), 
       }).then(function(){
         res.redirect('../adminpublications');
       })
+      .catch(function(err) {
+        // print the error details
+        console.log(err);
+    });
     }
   });
   
