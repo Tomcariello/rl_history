@@ -154,12 +154,12 @@
     });
 
     //Listen to update publication page submit button
-    function validateUpdatePublicationForm(event) {
+    function validateUpdatePublicationForm(objectId) {
 
-      var publicationFormattedData = $('#summernotePublication' + event).summernote('code');
+      var publicationFormattedData = $('#summernotePublication' + objectId).summernote('code');
       var publicationEncodedData = encodeURI(publicationFormattedData);
 
-      $("#PublicationText" + event).val(publicationEncodedData);
+      $("#PublicationText" + objectId).val(publicationEncodedData);
 
       return true;
     }
