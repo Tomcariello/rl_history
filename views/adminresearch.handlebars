@@ -56,10 +56,10 @@
             </div>
           </div>
           <div class="row">
-              <span class="titleText">
-                Caption:
-              </span>
-              <textarea rows="3" cols="40" id="ResearchCaption{{this.id}}" name="ResearchCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
+            <span class="titleText">
+              Caption:
+            </span>
+            <textarea rows="3" cols="40" id="ResearchCaption{{this.id}}" name="ResearchCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
           </div>
 
         </div>
@@ -90,6 +90,15 @@
             
             <input type="file" name="researchPicture" id="researchPicture">
             
+            <div class="row">
+              <div class="col-xs-4 formLabel">
+                Caption:
+              </div>
+              <div class="col-xs-8 ">
+                <input class="formInput" type="text" id="NewCaption" name="NewCaption"/>
+              </div>
+            </div>
+
             <div class="row">
               <div class="col-xs-4 formLabel">
                 Headline: 
@@ -137,7 +146,7 @@
             ]
         });
 
-        //Read coded contents & decode them
+        //Read contents & convert them from Summernote syntax to human readable
         var decodedTextContent = decodeURI( $("#ResearchText" + summerNoteID).val() );
 
         //Insert decoded text into the proper fields  
@@ -149,9 +158,14 @@
     function validateUpdateResearchForm(event) {
 
       var researchFormattedData = $('#summernoteResearch' + event).summernote('code');
+      alert(researchFormattedData)
+
       var researchEncodedData = encodeURI(researchFormattedData);
+      alert(researchEncodedData)
 
       $("#ResearchText" + event).val(researchEncodedData);
+      alert( $("#ResearchText1").val() )
+
 
       return true;
     }
