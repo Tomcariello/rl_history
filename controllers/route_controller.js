@@ -79,9 +79,6 @@ router.get('/publications', function(req, res) {
       //...& decode data for rendering
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
-
-      console.log("*****************************************");
-      console.log(payload.dynamicData[i].elementtext);
     }
 
     //Add administrator credential to the created object
@@ -103,6 +100,10 @@ router.get('/research', function(req, res) {
     for (i=0; i < payload.dynamicData.length; i++) {
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
+
+      console.log("*****************************************");
+      console.log(payload.dynamicData[i].elementtext);
+
     }
 
     //Add administrator credential to the created object
