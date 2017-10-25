@@ -100,10 +100,6 @@ router.get('/research', function(req, res) {
     for (i=0; i < payload.dynamicData.length; i++) {
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
-
-      console.log("*****************************************");
-      console.log(payload.dynamicData[i].elementtext);
-
     }
 
     //Add administrator credential to the created object
@@ -889,7 +885,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
           elementtext: req.body['ResearchText' + req.params.researchId],
           header: req.body['ResearchHeader' + req.params.researchId],
           elementimage: researchPageImageToUpload,
-          // elementtextposition: elementtextposition,
+          imagecaption: req.body['ResearchCaption' + req.params.researchId],
           updatedAt: currentDate
         }).then(function(){
           res.redirect('../adminresearch');
@@ -908,7 +904,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
         // optdes = req.body['optiondes' + optcount]
         elementtext: req.body['ResearchText' + req.params.researchId],
         header: req.body['ResearchHeader' + req.params.researchId],
-        // elementtextposition: elementtextposition,
+        imagecaption: req.body['ResearchCaption' + req.params.researchId],
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminresearch');

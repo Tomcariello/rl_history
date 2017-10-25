@@ -17,48 +17,61 @@
     <form enctype="multipart/form-data" action="updateResearch/{{this.id}}" onsubmit="return validateUpdateResearchForm({{this.id}})" method="POST"> 
 
       <div class='row researchGroup'>
-        <div class="col-sm-2">
-          <span class="titleText">Headline:</span>
-        </div>
-        <div class="col-sm-7">
-            <span class="titleText">
-              <input type="text" id="ResearchHeader{{this.id}}" name="ResearchHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
-            </span>
-        </div>
-        <div class="col-sm-3">
-        </div>
-      </div>  
-
-      <div class="row">
-        <div class="hideElement adminTextArea col-md-7">
-          <textarea rows="4" cols="50" id="ResearchText{{this.id}}" name="ResearchText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
-        </div>
-
-        <div class="col-sm-2">
-          <span class="titleText">Body:</span>
-        </div>
-        <div class="col-md-7">
-          <div class="row">
-            <div id="summernoteResearch{{this.id}}" data-id={{this.id}}>
+        <div class="col-sm-8">
+          <div class='row'>
+            <div class="col-sm-2">
+              <span class="titleText">Headline:</span>
+            </div>
+            <div class="col-sm-10">
+                <span class="titleText">
+                  <input type="text" id="ResearchHeader{{this.id}}" name="ResearchHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+                </span>
             </div>
           </div>
-        </div>
-        <div class="adminImageArea col-md-3">
-          Upload Image:
-          <img class='CMSImage' src="{{this.elementimage}}">
-          <input type="file" name="researchpicture" id="researchpicture">
-          <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
-        </div>
-      </div>
-      <div class="row buttonRow">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10 buttonCol">
-          <button type="submit" id="update">Update</button>
-          <a href="deleteResearch/{{this.id}}">
-            <button type="button" id="delete">Delete</button>
-          </a>
+          <div class="row">
+            <div class="hideElement adminTextArea col-md-12">
+              <textarea rows="4" cols="50" id="ResearchText{{this.id}}" name="ResearchText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <span class="titleText">Body:</span>
+            </div>
+            <div class="col-md-10">
+              <div class="row">
+                <div id="summernoteResearch{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>  
-      </div>
+
+        <div class="col-sm-4">
+          <div class="row">
+            <div class="adminImageArea col-sm-12">
+              Upload Image:
+              <img class='CMSImage' src="{{this.elementimage}}">
+              <input type="file" name="researchpicture" id="researchpicture">
+              <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+            </div>
+          </div>
+          <div class="row">
+              <span class="titleText">
+                Caption:
+              </span>
+              <textarea rows="3" cols="40" id="ResearchCaption{{this.id}}" name="ResearchCaption{{this.id}}" maxlength="2000">{{this.imageCaption}}</textarea> 
+          </div>
+
+        </div>
+        <div class="row buttonRow">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 buttonCol">
+            <button type="submit" id="update">Update</button>
+            <a href="deleteResearch/{{this.id}}">
+              <button type="button" id="delete">Delete</button>
+            </a>
+          </div>  
+        </div>
     
     </form>
   {{/each}}
