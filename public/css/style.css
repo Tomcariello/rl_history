@@ -59,7 +59,8 @@ a:focus, a:hover {
 
 .navbarPageTitle {
 	color: #c09859;
-	font-family: "Unna";
+	/* font-family: "Unna"; */
+	font-family: "Tahome";
 	font-size: 36px;
     text-transform: none;
     text-decoration: none;
@@ -91,7 +92,8 @@ a:focus, a:hover {
 	text-transform: initial;
 }	
 .navbar-default .navbar-nav>li>a {
-    color: #000000;
+	color: #000000;
+	font-family: "Tahoma";
 }
 /*Profile Image properties*/
 .profile {
