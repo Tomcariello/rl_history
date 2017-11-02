@@ -53,8 +53,9 @@
 
           <div class="row">
             <div class="adminImageArea col-md-4">
-              <input type="file" name="researchpicture" id="researchpicture">
+              <input type="file" name="researchpicture" id="researchpicture" class="hideElement">
               <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+              <label for="researchpicture">Select file</label>
             </div>
             <div class="col-md-8">
               <img class='CMSImage' src="{{this.elementimage}}">

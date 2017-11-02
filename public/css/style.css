@@ -389,7 +389,8 @@ hr {
 	border-radius: 10px;
 }
 .CMSImage {
-	max-width: 300px;
+	max-width: 500px;
+    margin-bottom: 20px;
 }
 
 .VideoTitleText {
