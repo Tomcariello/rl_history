@@ -17,51 +17,63 @@
     <form enctype="multipart/form-data" action="updateResearch/{{this.id}}" onsubmit="return validateUpdateResearchForm({{this.id}})" method="POST"> 
 
       <div class='row researchGroup'>
-        <div class="col-sm-8">
+        <div class="col-sm-12">
           <div class='row'>
-            <div class="col-sm-2">
+            <div class="col-sm-4">
               <span class="titleText">Headline:</span>
             </div>
-            <div class="col-sm-10">
-                <span class="titleText">
-                  <input type="text" id="ResearchHeader{{this.id}}" name="ResearchHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
-                </span>
+            {{!-- Hidden element to contain encoded text for form submission --}}
+            <div class="hideElement adminTextArea col-md-12">
+              <input type="text" id="ResearchHeader{{this.id}}" name="ResearchHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </div> 
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteHeadline{{this.id}}" data-id="{{this.id}}">
+                </div>
+              </div>
             </div>
           </div>
+
           <div class="row">
+            {{!-- Hidden element to contain encoded text for form submission --}}
             <div class="hideElement adminTextArea col-md-12">
               <textarea rows="4" cols="50" id="ResearchText{{this.id}}" name="ResearchText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-2">
+
+            <div class="col-md-4">
               <span class="titleText">Body:</span>
             </div>
-            <div class="col-md-10">
+            <div class="col-md-8">
               <div class="row">
                 <div id="summernoteResearch{{this.id}}" data-id={{this.id}}>
                 </div>
               </div>
             </div>
           </div>
-        </div>  
 
-        <div class="col-sm-4">
           <div class="row">
-            <div class="adminImageArea col-sm-12">
+            <div class="adminImageArea col-md-12">
               Upload Image:
               <img class='CMSImage' src="{{this.elementimage}}">
               <input type="file" name="researchpicture" id="researchpicture">
               <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
             </div>
           </div>
+          
           <div class="row">
-            <span class="titleText">
-              Caption:
-            </span>
-            <textarea rows="3" cols="40" id="ResearchCaption{{this.id}}" name="ResearchCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
+            <div class="hideElement adminTextArea col-md-12">
+              <textarea rows="3" cols="40" id="ResearchCaption{{this.id}}" name="ResearchCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
+            </div>
+            <div class="col-md-4">
+              <span class="titleText">Caption:</span>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteCaption{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
+            </div>
           </div>
-
         </div>
         <div class="row buttonRow">
           <div class="col-sm-2"></div>
@@ -135,7 +147,7 @@
       $('div[id^=summernote]').each(function() {
         var summerNoteID = $(this).data("id");
             
-        //Initialize Summernote
+        //Initialize Summernote BODY
         $('#summernoteResearch' + summerNoteID).summernote({
           fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
                       "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
@@ -153,19 +165,77 @@
         });
 
         //Read contents & convert them from Summernote syntax to human readable
-        var decodedTextContent = decodeURI( $("#ResearchText" + summerNoteID).val() );
+        var decodedBodyContent = decodeURI( $("#ResearchText" + summerNoteID).val() );
 
         //Insert decoded text into the proper fields  
-        $('#summernoteResearch' + summerNoteID).summernote('code', decodedTextContent);
+        $('#summernoteResearch' + summerNoteID).summernote('code', decodedBodyContent);
+
+        //Initialize Summernote Headline
+        $('#summernoteHeadline' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedHeadlineContent = decodeURI( $("#ResearchHeader" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteHeadline' + summerNoteID).summernote('code', decodedHeadlineContent);
+
+        //Initialize Summernote Caption
+        $('#summernoteCaption' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedCaptionContent = decodeURI( $("#ResearchCaption" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteCaption' + summerNoteID).summernote('code', decodedCaptionContent);
+
       })      
     });
 
     //Listen to update research page submit button
     function validateUpdateResearchForm(event) {
 
+      {{!-- Body --}}
       var researchFormattedData = $('#summernoteResearch' + event).summernote('code');
       var researchEncodedData = encodeURI(researchFormattedData);
       $("#ResearchText" + event).val(researchEncodedData);
+
+      {{!-- Headline --}}
+      var researchHeadlineData = $('#summernoteHeadline' + event).summernote('code');
+      var headlineEncodedData = encodeURI(researchHeadlineData);
+      $("#ResearchHeader" + event).val(headlineEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteCaption' + event).summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#ResearchCaption" + event).val(captionEncodedData);
 
       return true;
     }
