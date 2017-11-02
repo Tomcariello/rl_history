@@ -17,49 +17,75 @@
     <form enctype="multipart/form-data" action="updateBio/{{this.id}}" onsubmit="return validateUpdateBioForm({{this.id}})" method="POST"> 
 
       <div class='row bioGroup'>
-        <div class="col-sm-2">
-          <span class="titleText">Headline:</span>
-        </div>
-        <div class="col-sm-7">
-            <span class="titleText">
-              <input type="text" id="BioHeader{{this.id}}" name="BioHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
-            </span>
-        </div>
-        <div class="col-sm-3">
-        </div>
-      </div>  
-
-      <div class="row">
-        <div class="hideElement adminTextArea col-md-7">
-          <textarea rows="4" cols="50" id="BioText{{this.id}}" name="BioText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
-        </div>
-
-        <div class="col-sm-2">
-          <span class="titleText">Body:</span>
-        </div>
-        <div class="col-md-7">
+        <div class="col-sm-12">
           <div class="row">
-            <div id="summernoteBio{{this.id}}" data-id={{this.id}}>
+            <div class="col-sm-4">
+              <span class="titleText">Headline:</span>
+            </div>
+            {{!-- Hidden element to contain encoded text for form submission --}}
+            <div class="hideElement adminTextArea col-md-12">
+              <input type="text" id="BioHeader{{this.id}}" name="BioHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </div> 
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteHeadline{{this.id}}" data-id="{{this.id}}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            {{!-- Hidden element to contain encoded text for form submission --}}
+            <div class="hideElement adminTextArea col-md-7">
+              <textarea rows="4" cols="50" id="BioText{{this.id}}" name="BioText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+            </div>
+            <div class="col-sm-4">
+              <span class="titleText">Body:</span>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteBio{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="adminImageArea col-md-4">
+              <input type="file" name="biopicture" id="biopicture" class="hideElement">
+              <input type="hidden" name="bioPageImage{{this.id}}" id="bioPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+              <label for="biopicture" class="labelButton">Select file</label>
+            </div>
+            <div class="col-md-8">
+              <img class='CMSImage' src="{{this.elementimage}}">
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="hideElement adminTextArea col-md-12">
+              <textarea rows="3" cols="40" id="BioCaption{{this.id}}" name="BioCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
+            </div>
+            <div class="col-md-4">
+              <span class="titleText">Caption:</span>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteCaption{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="adminImageArea col-md-3">
-          Upload Image:
-          <img class='CMSImage' src="{{this.elementimage}}">
-          <input type="file" name="biopicture" id="biopicture">
-          <input type="hidden" name="bioPageImage{{this.id}}" id="bioPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+
+        <div class="row buttonRow">
+          <div class="col-sm-12 buttonCol">
+            <button type="submit" id="update">Update</button>
+            <a href="deleteBio/{{this.id}}">
+              <button type="button" id="delete">Delete</button>
+            </a>
+          </div>  
         </div>
       </div>
-      <div class="row buttonRow">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10 buttonCol">
-          <button type="submit" id="update">Update</button>
-          <a href="deleteBio/{{this.id}}">
-            <button type="button" id="delete">Delete</button>
-          </a>
-        </div>  
-      </div>
-    
     </form>
   {{/each}}
 
@@ -113,32 +139,96 @@
       $('div[id^=summernote]').each(function() {
         var summerNoteID = $(this).data("id");
             
-        //Initialize Summernote
+        //Initialize Summernote for the BODY
         $('#summernoteBio' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
           toolbar: [
               ['style', ['bold', 'italic', 'underline', 'clear']],
               ['font', ['strikethrough', 'superscript', 'subscript']],
               ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
               ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
               ['insert', ['link']]
             ]
         });
 
         //Read coded contents & decode them
-        var decodedTextContent = decodeURI( $("#BioText" + summerNoteID).val() );
+        var decodedBodyContent = decodeURI( $("#BioText" + summerNoteID).val() );
 
         //Insert decoded text into the proper fields  
-        $('#summernoteBio' + summerNoteID).summernote('code', decodedTextContent);
+        $('#summernoteBio' + summerNoteID).summernote('code', decodedBodyContent);
+
+        //Initialize Summernote for the HEADER
+        $('#summernoteHeadline' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedHeadlineContent = decodeURI( $("#BioHeader" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteHeadline' + summerNoteID).summernote('code', decodedHeadlineContent);
+
+
+        //Initialize Summernote CAPTION
+        $('#summernoteCaption' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedCaptionContent = decodeURI( $("#BioCaption" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteCaption' + summerNoteID).summernote('code', decodedCaptionContent);
+
       })      
     });
 
     //Listen to update bio page submit button
     function validateUpdateBioForm(event) {
 
+      {{!-- Body --}}
       var bioFormattedData = $('#summernoteBio' + event).summernote('code');
       var bioEncodedData = encodeURI(bioFormattedData);
-
       $("#BioText" + event).val(bioEncodedData);
+
+      {{!-- Headline --}}
+      var bioHeadlineData = $('#summernoteHeadline' + event).summernote('code');
+      var headlineEncodedData = encodeURI(bioHeadlineData);
+      $("#BioHeader" + event).val(headlineEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteCaption' + event).summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#BioCaption" + event).val(captionEncodedData);
 
       return true;
     }

@@ -51,6 +51,15 @@ router.get('/bio', function(req, res) {
     for (i=0; i < payload.dynamicData.length; i++) {
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
+
+      //Header
+      var decodeHeadline = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadline;
+
+      //Caption
+      var decodeCaption = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaption;
+
     }
 
     //Add administrator credential to the created object
@@ -826,7 +835,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
           elementtext: req.body['BioText' + req.params.bioId],
           header: req.body['BioHeader' + req.params.bioId],
           elementimage: bioPageImageToUpload,
-          // elementtextposition: elementtextposition,
+          imagecaption: req.body['BioCaption' + req.params.bioId],
           updatedAt: currentDate
         }).then(function(){
           res.redirect('../adminbio');
@@ -845,7 +854,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
         // optdes = req.body['optiondes' + optcount]
         elementtext: req.body['BioText' + req.params.bioId],
         header: req.body['BioHeader' + req.params.bioId],
-        // elementtextposition: elementtextposition,
+        imagecaption: req.body['BioCaption' + req.params.bioId],
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminbio');

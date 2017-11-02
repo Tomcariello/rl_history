@@ -537,6 +537,6 @@ input[name^=BioHeader] {
     font-size: 15px;
     font-family: "Unna";
 }
-#researchpicture {
+#researchpicture, #biopicture {
 	display: none;
 }
