@@ -137,11 +137,14 @@
             
         //Initialize Summernote
         $('#summernoteResearch' + summerNoteID).summernote({
+          fontNames: ["Roboto","Arial", "Arial Black", "Comic Sans MS", "Courier New",
+                             "Helvetica Neue", "Helvetica", "Impact", "Lucida Grande",
+                             "Tahoma", "Times New Roman", "Verdana"],
           toolbar: [
               ['style', ['bold', 'italic', 'underline', 'clear']],
               ['font', ['strikethrough', 'superscript', 'subscript']],
               ['fontsize', ['fontsize']],
-              ['fontName', ['Arial', 'Arial Black', 'Courier New', 'Merriweather']],
+              ["fontname", ["fontname"]],
               ['para', ['ul', 'ol', 'paragraph']],
               ['height', ['height']],
               ['insert', ['link']]

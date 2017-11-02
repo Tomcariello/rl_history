@@ -1,9 +1,9 @@
 <section class="main">
-  <div class='row pageTitle'>
+  {{!-- <div class='row pageTitle'>
     <div class="col-sm-12">
         Current Research
     </div>
-  </div>
+  </div> --}}
 
   {{#each dynamicData}}
     <div class='row'>
@@ -11,18 +11,23 @@
         {{{this.header}}}
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <img class="profile" src="{{this.elementimage}}">
+        <Br>
+        {{this.imagecaption}}
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+      
+
 
     <div class='row'>
       <div class="col-sm-12 col-md-9">
         <p>
           {{{this.elementtext}}}
         </p>
-      </div>
-
-      <div class="col-md-3">
-        <img class="profile" src="{{this.elementimage}}">
-        <Br>
-        {{this.imagecaption}}
       </div>
     </div>
   {{/each}}
