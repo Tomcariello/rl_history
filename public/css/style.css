@@ -527,3 +527,11 @@ input[name^=BioHeader] {
 	height: 50px;
 	margin-bottom: 20px;
 }
+.labelButton {
+	border: 2px solid #000000;
+    margin: 5px;
+    font-style: normal;
+    padding: 7px 35px;
+    font-size: 15px;
+    font-family: "Unna";
+}
