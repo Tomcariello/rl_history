@@ -52,11 +52,12 @@
           </div>
 
           <div class="row">
-            <div class="adminImageArea col-md-12">
-              Upload Image:
-              <img class='CMSImage' src="{{this.elementimage}}">
+            <div class="adminImageArea col-md-4">
               <input type="file" name="researchpicture" id="researchpicture">
               <input type="hidden" name="researchPageImage{{this.id}}" id="researchPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+            </div>
+            <div class="col-md-8">
+              <img class='CMSImage' src="{{this.elementimage}}">
             </div>
           </div>
           
