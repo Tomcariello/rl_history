@@ -98,8 +98,18 @@ router.get('/research', function(req, res) {
 
     //Loop through each returned object & decode data for rendering
     for (i=0; i < payload.dynamicData.length; i++) {
+      //Body
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
+
+      //Header
+      var decodeHeadline = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadline;
+
+      //Caption
+      var decodeCaption = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaption;
+
     }
 
     //Add administrator credential to the created object
@@ -107,7 +117,6 @@ router.get('/research', function(req, res) {
       payload.dynamicData["administrator"] = true;
     }
 
-    console.log(payload.dynamicData);
     res.render('research', {dynamicData: payload.dynamicData});
   })
 });
