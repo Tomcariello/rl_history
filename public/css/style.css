@@ -540,3 +540,7 @@ input[name^=BioHeader] {
 #researchpicture, #biopicture, #publicationpicture {
 	display: none;
 }
+.modal-dialog {
+    width: 900px;
+    margin: 30px auto;
+}

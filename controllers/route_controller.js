@@ -88,6 +88,12 @@ router.get('/publications', function(req, res) {
       //...& decode data for rendering
       var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
       payload.dynamicData[i].elementtext = decodeElementText;
+
+      var decodeHeadlineText = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadlineText;
+
+      var decodeCaptionText = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaptionText;
     }
 
     //Add administrator credential to the created object
@@ -399,6 +405,7 @@ router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), 
           header: req.body.NewHeader,
           elementtext: req.body.NewBody,
           category: req.body.NewCategory,
+          imagecaption: req.body.NewCaption,
           createdAt: currentDate,
           updatedAt: currentDate
         }).then(function(){
@@ -418,6 +425,7 @@ router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), 
         header: req.body.NewHeader,
         elementtext: req.body.NewBody,
         category: req.body.NewCategory,
+        imagecaption: req.body.NewCaption,
         createdAt: currentDate,
         updatedAt: currentDate
       }).then(function(){
@@ -985,7 +993,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
           header: req.body['PublicationHeader' + req.params.publicationId],
           category: req.body['category' + req.params.publicationId],
           elementimage: publicationsImageToUpload,
-          // elementtextposition: elementtextposition,
+          imagecaption: req.body['PublicationCaption' + req.params.publicationId],
           updatedAt: currentDate
         }).then(function(){
           res.redirect('../adminpublications');
@@ -1005,7 +1013,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
         elementtext: req.body['PublicationText' + req.params.publicationId],
         header: req.body['PublicationHeader' + req.params.publicationId],
         category: req.body['category' + req.params.publicationId],
-        // elementtextposition: elementtextposition,
+        imagecaption: req.body['PublicationCaption' + req.params.publicationId],
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminpublications');
