@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
 	/* font-family: 'Open Sans Condensed', sans-serif; */
-	font-family: "Unna";
+	font-family: "Tahoma";
 }
 .container {
 	width: 100%;
@@ -59,7 +59,7 @@ a:focus, a:hover {
 
 .navbarPageTitle {
 	color: #c09859;
-	/* font-family: "Unna"; */
+	/* font-family: "Tahoma"; */
 	font-family: "Tahoma";
 	font-size: 36px;
     text-transform: none;
@@ -81,7 +81,7 @@ a:focus, a:hover {
     color: #3e3f3a;
 }
 .navbarLinks {
-	font-family: "Unna";
+	font-family: "Tahoma";
     font-size: 14px;
     text-transform: capitalize;
     text-decoration: none;
@@ -223,7 +223,7 @@ button {
     font-style: normal;
     padding: 7px 35px;
     font-size: 15px;
-    font-family: "Unna";
+    font-family: "Tahoma";
 }
 
 button:hover {
@@ -364,6 +364,7 @@ hr {
 	line-height: 170%;
 	font-size: 22px;
 	margin-bottom: 10px;
+	font-family: tahoma;
 }
 .formInput {
     width: 90%;
@@ -401,7 +402,7 @@ hr {
 }
 .pageTitle {
     color: #c09859;
-    font-family: "Unna";
+    font-family: "Tahoma";
     font-size: 36px;
     text-transform: none;
     text-decoration: none;
@@ -418,7 +419,7 @@ hr {
 }
 .adminPortalCard {
 	color: #c09859;
-    font-family: "Unna";
+    font-family: "Tahoma";
     font-size: 36px;
     text-transform: none;
     text-decoration: none;
@@ -535,7 +536,7 @@ input[name^=BioHeader] {
     font-style: normal;
     padding: 7px 35px;
     font-size: 15px;
-    font-family: "Unna";
+    font-family: "Tahoma";
 }
 .modal-dialog {
     width: 900px;
