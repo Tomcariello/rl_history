@@ -52,9 +52,9 @@
 
           <div class="row">
             <div class="adminImageArea col-md-4">
-              <input type="file" name="publicationpicture" id="publicationpicture" class="hideElement">
+              <input type="file" name="publicationpicture" id="publicationpicture{{this.id}}" class="hideElement">
               <input type="hidden" name="publicationPageImage{{this.id}}" id="publicationPageImage{{this.id}}" value="{{this.elementimage}}"/> 
-              <label for="publicationpicture" class="labelButton">Select file</label>
+              <label for="publicationpicture{{this.id}}" class="labelButton">Select file</label>
             </div>
             <div class="col-md-8">
               <img class='CMSImage' src="{{this.elementimage}}">

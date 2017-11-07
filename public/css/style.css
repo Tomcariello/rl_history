@@ -537,10 +537,10 @@ input[name^=BioHeader] {
     font-size: 15px;
     font-family: "Unna";
 }
-#researchpicture, #biopicture, #publicationpicture {
-	display: none;
-}
 .modal-dialog {
     width: 900px;
     margin: 30px auto;
+}
+[id^="biopicture4"], [id^="researchpicture"], [id^="publicationpicture"] {
+    display: none !important;
 }
