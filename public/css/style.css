@@ -542,6 +542,6 @@ input[name^=BioHeader] {
     width: 900px;
     margin: 30px auto;
 }
-[id^="biopicture4"], [id^="researchpicture"], [id^="publicationpicture"] {
+[id^="biopicture4"], [id^="researchpicture"], [id^="publicationpicture"], #publicationPicture {
     display: none !important;
 }
