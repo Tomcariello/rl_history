@@ -116,8 +116,8 @@
           <form enctype="multipart/form-data" action="newPublication" onsubmit="return validateNewPublicationForm()" method="POST">
 
             <div class="row">
-              <input type="file" name="publicationpicture" id="publicationpicture" class="hideElement">
-              <label for="publicationpicture" class="labelButton">Select file</label>
+              <input type="file" name="publicationPicture" id="publicationPicture" class="hideElement">
+              <label for="publicationPicture" class="labelButton">Select file</label>
               </div>
             <div class="row">
               {{!-- Hidden element to contain encoded text for form submission --}}
@@ -338,6 +338,7 @@
       return true;
     }
 
+    //Listen to New publication submit button
     function validateNewPublicationForm() {
       {{!-- Body --}}
       var publicationFormattedData = $('#summernoteNewBody').summernote('code');
