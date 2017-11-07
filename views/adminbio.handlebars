@@ -95,29 +95,61 @@
       <div class="modal-content">
         <div class="modal-header pageTitle">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          Add New Bio Object
+          Add New Bio
         </div>
         
         <div class="modal-body">
-          <form enctype="multipart/form-data" action="newBio" method="POST">
-            
-            <input type="file" name="bioPicture" id="bioPicture">
+          <form enctype="multipart/form-data" action="newBio" onsubmit="return validateNewBioForm()"method="POST">
             
             <div class="row">
-              <div class="col-xs-4 formLabel">
+              <input type="file" name="bioPicture" id="bioPicture">
+              <label for="bioPicture" class="labelButton">Select file</label>
+            </div>  
+            <div class="row">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="hideElement adminTextArea col-md-12">
+                <textarea rows="3" cols="40" id="NewCaption" name="NewCaption" maxlength="2000"></textarea> 
+              </div>
+              <div class="col-md-3 formLabel">
+                Caption:
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewCaption">
+                  </div>
+                </div>
+              </div>
+            </div>
+              
+            <div class="row">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+              <div class="col-md-3 formLabel">
                 Headline: 
               </div>
-              <div class="col-xs-8 ">
-                <input class="formInput" type="text" id="NewHeader" name="NewHeader"/> 
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewHeader">
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="row">
-              <div class="col-xs-4 formLabel">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+              <div class="col-md-3 formLabel">
                 Body: 
               </div>
-              <div class="col-xs-8 ">
-                <input class="formInput" type="text" id="NewBody" name="NewBody" height="300px"/> 
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewBody">
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -162,7 +194,7 @@
         //Insert decoded text into the proper fields  
         $('#summernoteBio' + summerNoteID).summernote('code', decodedBodyContent);
 
-        //Initialize Summernote for the HEADER
+        //Initialize Summernote Headline
         $('#summernoteHeadline' + summerNoteID).summernote({
           fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
                       "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
@@ -186,7 +218,7 @@
         $('#summernoteHeadline' + summerNoteID).summernote('code', decodedHeadlineContent);
 
 
-        //Initialize Summernote CAPTION
+        //Initialize Summernote Caption
         $('#summernoteCaption' + summerNoteID).summernote({
           fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
                       "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
@@ -209,6 +241,55 @@
         //Insert decoded text into the proper fields  
         $('#summernoteCaption' + summerNoteID).summernote('code', decodedCaptionContent);
 
+        //Initialize Summernote for NEW Bio Entries
+        $('#summernoteNewCaption').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewHeader').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewBody').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
       })      
     });
 
@@ -229,6 +310,26 @@
       var captionFormattedData = $('#summernoteCaption' + event).summernote('code');
       var captionEncodedData = encodeURI(captionFormattedData);
       $("#BioCaption" + event).val(captionEncodedData);
+
+      return true;
+    }
+
+    //Listen to New Bio submit button
+    function validateNewBioForm() {
+      {{!-- Body --}}
+      var bioFormattedData = $('#summernoteNewBody').summernote('code');
+      var bioEncodedData = encodeURI(bioFormattedData);
+      $("#NewBody").val(bioEncodedData);
+
+      {{!-- Headline --}}
+      var bioHeadlineData = $('#summernoteNewHeader').summernote('code');
+      var headerEncodedData = encodeURI(bioHeadlineData);
+      $("#NewHeader").val(headerEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteNewCaption').summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#NewCaption").val(captionEncodedData);
 
       return true;
     }

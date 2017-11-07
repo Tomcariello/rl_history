@@ -478,6 +478,7 @@ router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), 
             elementimage: bioImageToUpload,
             header: req.body.NewHeader,
             elementtext: req.body.NewBody,
+            imagecaption: req.body.NewCaption,
             createdAt: currentDate,
             updatedAt: currentDate
         }).then(function(){
@@ -495,6 +496,7 @@ router.post('/newpublication', isLoggedIn, upload.single('publicationPicture'), 
         elementimage: bioImageToUpload,
         header: req.body.NewHeader,
         elementtext: req.body.NewBody,
+        imagecaption: req.body.NewCaption,
         createdAt: currentDate,
         updatedAt: currentDate
       }).then(function(){
