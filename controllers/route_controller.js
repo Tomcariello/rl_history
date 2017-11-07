@@ -579,71 +579,6 @@ router.post('/newCarousel', isLoggedIn, upload.single('carouselPicture'), functi
   }
 });
 
-// router.post('/newBio', isLoggedIn, upload.single('bioPicture'), function(req, res) {
-  
-//   var bioImageToUpload;
-
-//   //Check if image was upload & process it
-//   if (typeof req.file !== "undefined") {
-//     //Process file being uploaded
-//     var fileName = req.file.originalname;
-//     var fileType = req.file.mimetype;
-//     var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
-
-//     //Create Amazon S3 specific object
-//     var s3 = new aws.S3();
-
-//     var params = {
-//       Bucket: S3_BUCKET,
-//       Key: fileName, //This is what S3 will use to store the data uploaded.
-//       Body: stream, //the actual *file* being uploaded
-//       ContentType: fileType, //type of file being uploaded
-//       ACL: 'public-read', //Set permissions so everyone can see the image
-//       processData: false,
-//       accessKeyId: S3_accessKeyId,
-//       secretAccessKey: S3_secretAccessKey
-//       }
-
-//     s3.upload( params, function(err, data) {
-//       if (err) {
-//         console.log("err is " + err);
-//       }
-
-//       //Get S3 filepath & set it to bioImageToUpload
-//       bioImageToUpload = data.Location
-
-//       var currentDate = new Date();
-
-//       //Use Sequelize to push to DB
-//       models.Bio.create({
-//           elementimage: bioImageToUpload,
-//           header: req.body.NewHeader,
-//           elementtext: req.body.NewBody,
-//           createdAt: currentDate,
-//           updatedAt: currentDate
-//       }).then(function(){
-//         res.redirect('../adminbio');
-//       });
-//     });
-//   //only used if no picture uploaded
-//   } else {
-//     bioImageToUpload = req.body.bioImage; //carousel image was unchanged
-
-//     var currentDate = new Date();
-
-//     //Use Sequelize to push to DB
-//     models.Bio.create({
-//       elementimage: bioImageToUpload,
-//       header: req.body.NewHeader,
-//       elementtext: req.body.NewBody,
-//       createdAt: currentDate,
-//       updatedAt: currentDate
-//     }).then(function(){
-//       res.redirect('../adminbio');
-//     })
-//   }
-// });
-
 router.post('/newResearch', isLoggedIn, upload.single('researchPicture'), function(req, res) {
   
   var researchImageToUpload;
@@ -693,7 +628,6 @@ router.post('/newResearch', isLoggedIn, upload.single('researchPicture'), functi
     });
   //only used if no picture uploaded
   } else {
-    console.log('new object without an image.')
     researchImageToUpload = req.body.researchImage; //carousel image was unchanged
 
     var currentDate = new Date();

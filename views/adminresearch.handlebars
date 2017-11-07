@@ -96,38 +96,63 @@
       <div class="modal-content">
         <div class="modal-header pageTitle">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          Add New Research Object
+          Add New Research
         </div>
         
         <div class="modal-body">
-          <form enctype="multipart/form-data" action="newResearch" method="POST">
-            
-            <input type="file" name="researchPicture" id="researchPicture">
+          <form enctype="multipart/form-data" action="newResearch" onsubmit="return validateNewResearchForm()" method="POST">
             
             <div class="row">
-              <div class="col-xs-4 formLabel">
+              <input type="file" name="researchPicture" id="researchPicture" class="hideElement">
+              <label for="publicationPicture" class="labelButton">Select file</label>
+            </div>
+            
+            <div class="row">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="hideElement adminTextArea col-md-12">
+                <textarea rows="3" cols="40" id="NewCaption" name="NewCaption" maxlength="2000"></textarea> 
+              </div>
+              
+              <div class="col-md-3 formLabel">
                 Caption:
               </div>
-              <div class="col-xs-8 ">
-                <input class="formInput" type="text" id="NewCaption" name="NewCaption"/>
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewCaption">
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="row">
-              <div class="col-xs-4 formLabel">
+             {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+              <div class="col-md-3 formLabel">
                 Headline: 
               </div>
-              <div class="col-xs-8 ">
-                <input class="formInput" type="text" id="NewHeader" name="NewHeader"/> 
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewHeader">
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="row">
-              <div class="col-xs-4 formLabel">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+              <div class="col-md-3 formLabel">
                 Body: 
               </div>
-              <div class="col-xs-8 ">
-                <input class="formInput" type="text" id="NewBody" name="NewBody" height="300px"/> 
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewBody">
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -218,6 +243,59 @@
         //Insert decoded text into the proper fields  
         $('#summernoteCaption' + summerNoteID).summernote('code', decodedCaptionContent);
 
+        //Initialize Summernote for new Research Objects
+        $('#summernoteNewCaption').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewHeader').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewBody').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+
+
+
+
       })      
     });
 
@@ -241,6 +319,27 @@
 
       return true;
     }
+
+    //Listen to New Research submit button
+    function validateNewResearchForm() {
+      {{!-- Body --}}
+      var researchFormattedData = $('#summernoteNewBody').summernote('code');
+      var researchEncodedData = encodeURI(researchFormattedData);
+      $("#NewBody").val(researchEncodedData);
+
+      {{!-- Headline --}}
+      var researchHeadlineData = $('#summernoteNewHeader').summernote('code');
+      var headerEncodedData = encodeURI(researchHeadlineData);
+      $("#NewHeader").val(headerEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteNewCaption').summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#NewCaption").val(captionEncodedData);
+
+      return true;
+    }
+
 
   	//Listen to trigger modal
     $("#addnewresearch" ).click(function() {
