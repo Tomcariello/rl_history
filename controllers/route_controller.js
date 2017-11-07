@@ -797,7 +797,7 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
 });
 
 //Process Bio update requests
-router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture' + req.params.bioId), function(req, res) {
+router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), function(req, res) {
   
   
   //Previous settings. Used if not overwritten below.
