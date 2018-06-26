@@ -351,8 +351,8 @@ router.post('/contact/message', function(req, res) {
 
     //Send email to alert the admin that a message was recieved
     var mailOptions = {
-        from: 'contact@tomcariello.com', // sender address
-        to: 'tomcariello@gmail.com', // list of recipients
+        from: 'contact@RaechelLutz.com', // sender address
+        to: 'Raechel.Lutz@gmail.com', // list of recipients
         subject: 'Someone left you a message', // Subject line
         text: 'Name: ' + req.body.fname + '\n Message: ' + req.body.message
     };
