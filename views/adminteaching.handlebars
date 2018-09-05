@@ -1,0 +1,350 @@
+<section class="main">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.4/summernote.js"></script>
+
+  <div class='row pageTitle bottomBorder'>
+    <div class="col-sm-11">
+        Current Teaching Entries
+    </div>
+    <div class="col-sm-1">
+      <i class="fa fa-plus-square" id="addnewteaching"></i>
+    </div>
+  </div>
+
+  {{#each dynamicData}}
+
+    <form enctype="multipart/form-data" action="updateTeaching/{{this.id}}" onsubmit="return validateUpdateTeachingForm({{this.id}})" method="POST"> 
+
+      <div class='row teachingGroup'>
+        <div class="col-sm-12">
+          <div class='row'>
+            <div class="col-sm-4">
+              <span class="titleText">Headline:</span>
+            </div>
+            {{!-- Hidden element to contain encoded text for form submission --}}
+            <div class="hideElement adminTextArea col-md-12">
+              <input type="text" id="TeachingHeader{{this.id}}" name="TeachingHeader{{this.id}}" maxlength="200" value="{{this.header}}"/>
+            </div> 
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteHeadline{{this.id}}" data-id="{{this.id}}">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            {{!-- Hidden element to contain encoded text for form submission --}}
+            <div class="hideElement adminTextArea col-md-12">
+              <textarea rows="4" cols="50" id="TeachingText{{this.id}}" name="TeachingText{{this.id}}" maxlength="2000">{{this.elementtext}}</textarea> 
+            </div>
+
+            <div class="col-md-4">
+              <span class="titleText">Body:</span>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteTeaching{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="adminImageArea col-md-4">
+              <input type="file" name="teachingpicture" id="teachingpicture{{this.id}}" class="hideElement">
+              <input type="hidden" name="teachingPageImage{{this.id}}" id="teachingPageImage{{this.id}}" value="{{this.elementimage}}"/> 
+              <label for="teachingpicture{{this.id}}" class="labelButton">Select file</label>
+            </div>
+            <div class="col-md-8">
+              <img class='CMSImage' src="{{this.elementimage}}">
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="hideElement adminTextArea col-md-12">
+              <textarea rows="3" cols="40" id="TeachingCaption{{this.id}}" name="TeachingCaption{{this.id}}" maxlength="2000">{{this.imagecaption}}</textarea> 
+            </div>
+            <div class="col-md-4">
+              <span class="titleText">Caption:</span>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div id="summernoteCaption{{this.id}}" data-id={{this.id}}>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row buttonRow">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10 buttonCol">
+            <button type="submit" id="update">Update</button>
+            <a href="deleteTeaching/{{this.id}}">
+              <button type="button" id="delete">Delete</button>
+            </a>
+          </div>  
+        </div>
+    
+    </form>
+  {{/each}}
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header pageTitle">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          Add New Teaching
+        </div>
+        
+        <div class="modal-body">
+          <form enctype="multipart/form-data" action="newTeaching" onsubmit="return validateNewTeachingForm()" method="POST">
+            
+            <div class="row">
+              <input type="file" name="teachingPicture" id="teachingPicture" class="hideElement">
+              <label for="teachingPicture" class="labelButton">Select file</label>
+            </div>
+            
+            <div class="row">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="hideElement adminTextArea col-md-12">
+                <textarea rows="3" cols="40" id="NewCaption" name="NewCaption" maxlength="2000"></textarea> 
+              </div>
+              
+              <div class="col-md-3 formLabel">
+                Caption:
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewCaption">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+             {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewHeader" name="NewHeader"/> 
+              </div>
+              <div class="col-md-3 formLabel">
+                Headline: 
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewHeader">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              {{!-- Hidden element to contain encoded text for form submission --}}
+              <div class="formInput hideElement">
+                <input type="text" id="NewBody" name="NewBody" height="300px"/> 
+              </div>
+              <div class="col-md-3 formLabel">
+                Body: 
+              </div>
+              <div class="col-md-9">
+                <div class="row">
+                  <div id="summernoteNewBody">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <button type="submit" id="update">Submit</button>
+              <button type="cancel" id="cancel" data-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+ 
+ <script>
+    $(document).ready(function() {
+      
+      //loop through the DOM and create a summernote element for each object    
+      $('div[id^=summernote]').each(function() {
+        var summerNoteID = $(this).data("id");
+            
+        //Initialize Summernote BODY
+        $('#summernoteTeaching' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedBodyContent = decodeURI( $("#TeachingText" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteTeaching' + summerNoteID).summernote('code', decodedBodyContent);
+
+        //Initialize Summernote Headline
+        $('#summernoteHeadline' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedHeadlineContent = decodeURI( $("#TeachingHeader" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteHeadline' + summerNoteID).summernote('code', decodedHeadlineContent);
+
+        //Initialize Summernote Caption
+        $('#summernoteCaption' + summerNoteID).summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        //Read contents & convert them from Summernote syntax to human readable
+        var decodedCaptionContent = decodeURI( $("#TeachingCaption" + summerNoteID).val() );
+
+        //Insert decoded text into the proper fields  
+        $('#summernoteCaption' + summerNoteID).summernote('code', decodedCaptionContent);
+
+        //Initialize Summernote for new Teaching Objects
+        $('#summernoteNewCaption').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewHeader').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+        $('#summernoteNewBody').summernote({
+          fontNames: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          fontNamesIgnoreCheck: ["Arial", "Arial Black", "Courier New", "Helvetica Neue", "Helvetica", 
+                      "Impact", "Lucida Grande", "Tahoma", "Times New Roman", "Verdana"],
+          toolbar: [
+              ['style', ['bold', 'italic', 'underline', 'clear']],
+              ['font', ['strikethrough', 'superscript', 'subscript']],
+              ['fontsize', ['fontsize']],
+              ["fontname", ["fontname"]],
+              ['para', ['ul', 'ol', 'paragraph']],
+              ['height', ['height']],
+              ['insert', ['link']]
+            ]
+        });
+
+
+
+
+
+      })      
+    });
+
+    //Listen to update teaching page submit button
+    function validateUpdateTeachingForm(event) {
+
+      {{!-- Body --}}
+      var teachingFormattedData = $('#summernoteTeaching' + event).summernote('code');
+      var teachingEncodedData = encodeURI(teachingFormattedData);
+      $("#TeachingText" + event).val(teachingEncodedData);
+
+      {{!-- Headline --}}
+      var teachingHeadlineData = $('#summernoteHeadline' + event).summernote('code');
+      var headlineEncodedData = encodeURI(teachingHeadlineData);
+      $("#TeachingHeader" + event).val(headlineEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteCaption' + event).summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#TeachingCaption" + event).val(captionEncodedData);
+
+      return true;
+    }
+
+    //Listen to New Teaching submit button
+    function validateNewTeachingForm() {
+      {{!-- Body --}}
+      var teachingFormattedData = $('#summernoteNewBody').summernote('code');
+      var teachingEncodedData = encodeURI(teachingFormattedData);
+      $("#NewBody").val(teachingEncodedData);
+
+      {{!-- Headline --}}
+      var teachingHeadlineData = $('#summernoteNewHeader').summernote('code');
+      var headerEncodedData = encodeURI(teachingHeadlineData);
+      $("#NewHeader").val(headerEncodedData);
+
+      {{!-- Caption --}}
+      var captionFormattedData = $('#summernoteNewCaption').summernote('code');
+      var captionEncodedData = encodeURI(captionFormattedData);
+      $("#NewCaption").val(captionEncodedData);
+
+      return true;
+    }
+
+
+  	//Listen to trigger modal
+    $("#addnewteaching" ).click(function() {
+	  	$("#myModal").modal();
+	  });
+  </script>
+
+</section>

@@ -136,6 +136,36 @@ router.get('/research', function(req, res) {
   })
 });
 
+router.get('/teaching', function(req, res) {
+  models.Teaching.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data}
+
+    //Loop through each returned object & decode data for rendering
+    for (i=0; i < payload.dynamicData.length; i++) {
+      //Body
+      var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
+
+      //Header
+      var decodeHeadline = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadline;
+
+      //Caption
+      var decodeCaption = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaption;
+
+    }
+
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
+
+    res.render('teaching', {dynamicData: payload.dynamicData});
+  })
+});
+
 router.get('/contact', function(req, res) {
   var payload = {
     dynamicData: {
@@ -223,6 +253,15 @@ router.get('/adminresearch', isLoggedIn, function(req, res) {
     res.render('adminresearch', {dynamicData: payload.dynamicData});
   })
 });
+router.get('/adminteaching', isLoggedIn, function(req, res) {
+  //Pull teaching data from database
+  models.Teaching.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data};
+    payload.dynamicData["administrator"] = true;
+    res.render('adminteaching', {dynamicData: payload.dynamicData});
+  })
+});
 
 router.get('/admincarousel', isLoggedIn, function(req, res) {
   models.Carousel.findAll({})
@@ -259,7 +298,7 @@ router.get('/deletemessage/:messageId', isLoggedIn, function(req, res) {
   //Use Sequelize to find the relevant DB object
   // models.messages.findOne({ where: {id: req.params.messageId} })
   models.messages.findOne({ 
-    where: {id: { [Op.eq]: req.params.messageId } } })
+    where: {id: req.params.messageId } })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -272,7 +311,7 @@ router.get('/deletemessage/:messageId', isLoggedIn, function(req, res) {
 router.get('/deleteCarousel/:carouselId', isLoggedIn, function(req, res) {
 
   //Use Sequelize to find the relevant DB object
-  models.Carousel.findOne({ where: {id: { [Op.eq]: req.params.carouselId} } })
+  models.Carousel.findOne({ where: {id: req.params.carouselId} })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -285,7 +324,7 @@ router.get('/deleteCarousel/:carouselId', isLoggedIn, function(req, res) {
 router.get('/deleteBio/:bioId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
+  models.Bio.findOne({ where: {id: req.params.bioId} })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -298,12 +337,25 @@ router.get('/deleteBio/:bioId', isLoggedIn, function(req, res) {
 router.get('/deleteResearch/:researchId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
+  models.Research.findOne({ where: {id: req.params.researchId} })
   .then(function(id) {
     //Delete the object
     id.destroy();
   }).then(function(){
     res.redirect('../adminresearch');
+  })
+})
+
+//Delete Teaching Object
+router.get('/deleteTeaching/:teachingId', isLoggedIn, function(req, res) {
+  
+  //Use Sequelize to find the relevant DB object
+  models.Teaching.findOne({ where: {id: req.params.teachingId} })
+  .then(function(id) {
+    //Delete the object
+    id.destroy();
+  }).then(function(){
+    res.redirect('../adminteaching');
   })
 })
 
@@ -649,6 +701,77 @@ router.post('/newResearch', isLoggedIn, upload.single('researchPicture'), functi
   }
 });
 
+router.post('/newTeaching', isLoggedIn, upload.single('teachingPicture'), function(req, res) {
+  
+  var teachingImageToUpload;
+
+  //Check if image was upload & process it
+  if (typeof req.file !== "undefined") {
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+      }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to teachingImageToUpload
+      teachingImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to push to DB
+      models.Teaching.create({
+          elementimage: teachingImageToUpload,
+          header: req.body.NewHeader,
+          elementtext: req.body.NewBody,
+          imagecaption: req.body.NewCaption,
+          createdAt: currentDate,
+          updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminteaching');
+      });
+    });
+  //only used if no picture uploaded
+  } else {
+    teachingImageToUpload = req.body.teachingImage; //carousel image was unchanged
+
+    var currentDate = new Date();
+
+    //Use Sequelize to push to DB
+    models.Teaching.create({
+      elementimage: teachingImageToUpload,
+      header: req.body.NewHeader,
+      elementtext: req.body.NewBody,
+      imagecaption: req.body.NewCaption,
+      createdAt: currentDate,
+      updatedAt: currentDate
+    }).then(function(){
+      res.redirect('../adminteaching');
+    })
+    .catch(function(err) {
+      // print the error details
+      console.log(err);
+  });
+  }
+});
+
 //Process Carousel update requests
 router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), function(req, res) {
 
@@ -686,7 +809,7 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
       var currentDate = new Date();
 
       //Use Sequelize to find the record
-      models.Carousel.findOne({ where: {id: { [Op.eq]: req.body.dbid} } } )
+      models.Carousel.findOne({ where: {id: req.body.dbid} } )
       
       .then(function(id) {
         //Update the data
@@ -710,7 +833,7 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
     var currentDate = new Date();
 
     //Use Sequelize to push to DB
-    models.Carousel.findOne({ where: {id: { [Op.eq]: req.body.dbid} } } )
+    models.Carousel.findOne({ where: {id: req.body.dbid} } )
       
     .then(function(id) {
       //Update the data
@@ -770,7 +893,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
+      models.Bio.findOne({ where: {id: req.params.bioId} })
       
       .then(function(id) {
         //Update the data
@@ -789,7 +912,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
+    models.Bio.findOne({ where: {id: req.params.bioId} })
     
     .then(function(id) {
       //Update the data
@@ -845,7 +968,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
+      models.Research.findOne({ where: {id: req.params.researchId} })
       
       .then(function(id) {
         //Update the data
@@ -864,7 +987,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
+    models.Research.findOne({ where: {id: req.params.researchId} })
     
     .then(function(id) {
       //Update the data
@@ -876,6 +999,81 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminresearch');
+      })
+    })
+  }
+});
+
+//Process Teaching update requests
+router.post('/updateTeaching/:teachingId', isLoggedIn, upload.single('teachingpicture'), function(req, res) {
+  
+  //Previous settings. Used if not overwritten below.
+  var teachingPageImageToUpload = req.body.teachingPageImage; 
+
+  //Check if any image(s) were uploaded
+  if (typeof req.file !== "undefined") {
+
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to teachingPageImageToUpload
+      teachingPageImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Teaching.findOne({ where: {id: req.params.teachingId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['TeachingText' + req.params.teachingId],
+          header: req.body['TeachingHeader' + req.params.teachingId],
+          elementimage: teachingPageImageToUpload,
+          imagecaption: req.body['TeachingCaption' + req.params.teachingId],
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminteaching');
+        })
+      })
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.Teaching.findOne({ where: {id: req.params.teachingId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['TeachingText' + req.params.teachingId],
+        header: req.body['TeachingHeader' + req.params.teachingId],
+        imagecaption: req.body['TeachingCaption' + req.params.teachingId],
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminteaching');
       })
     })
   }
@@ -919,7 +1117,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Publications.findOne({ where: {id: { [Op.eq]: req.params.publicationId} } })
+      models.Publications.findOne({ where: {id: req.params.publicationId} })
       
       .then(function(id) {
         //Update the data
@@ -939,7 +1137,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Publications.findOne({ where: {id: { [Op.eq]: req.params.publicationId} } } )
+    models.Publications.findOne({ where: {id: req.params.publicationId} } )
     
     .then(function(id) {
       //Update the data

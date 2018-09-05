@@ -1,0 +1,24 @@
+<section class="main">
+  {{#each dynamicData}}
+    <div class='row'>
+      <div class="col-xs-12 pageTitle">
+        {{{this.header}}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <img class="profile" src="{{this.elementimage}}">
+        <Br>
+        {{{this.imagecaption}}}
+      </div>
+    </div>
+      
+    <div class='row'>
+      <div class="col-sm-12">
+        <p>
+          {{{this.elementtext}}}
+        </p>
+      </div>
+    </div>
+  {{/each}}
+</section>
