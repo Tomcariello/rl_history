@@ -512,6 +512,7 @@ input[name^=BioHeader] {
 	background-color: #c09859;
 	border: none;
 	color: #ffffff;
+	text-align: center;
 }
 .glyphicon {
 	top: inherit;
@@ -544,4 +545,16 @@ input[name^=BioHeader] {
 }
 [id^="biopicture4"], [id^="researchpicture"], [id^="publicationpicture"], #publicationPicture, #bioPicture, #researchPicture {
     display: none !important;
+}
+i.fab.fa-staylinked {
+    font-size: 40px;
+    margin-top: 2px;
+}
+.bioImageCaption {
+    font-size: 18px;
+}
+.col-sm-4.twitterContainer {
+    background-color: rgba(86, 171, 238, .25);
+    padding: 10px;
+    border-radius: 8px;
 }

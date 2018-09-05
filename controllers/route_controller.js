@@ -22,24 +22,24 @@ var S3_secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 //=====GET routes to load pages=====
 //==================================
 router.get('/', function(req, res) {
-  res.redirect('/bio');
+  res.redirect('/index');
 });
 
 router.get('/index', function(req, res) {
   //Redirect to Bio page until the landing page is sorted out.
-  res.redirect('/bio');
+  // res.redirect('/bio');
  
-  // models.Carousel.findAll({})
-  // .then(function(data) {
-  //   var payload = {dynamicData: data}
+  models.Carousel.findAll({})
+  .then(function(data) {
+    var payload = {dynamicData: data}
 
-  //   //Add administrator credential to the created object
-  //   if (req.user) {
-  //     payload.dynamicData["administrator"] = true;
-  //   }
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
     
-  //   res.render('index', {dynamicData: payload.dynamicData});
-  // })
+    res.render('index', {dynamicData: payload.dynamicData});
+  })
 });
 
 router.get('/bio', function(req, res) {
@@ -136,9 +136,7 @@ router.get('/research', function(req, res) {
   })
 });
 
-
 router.get('/contact', function(req, res) {
-
   var payload = {
     dynamicData: {
       administrator: false,
@@ -166,7 +164,6 @@ router.get('/register', function(req, res) {
 router.get('/login', function(req, res) {
   res.render('login');
 });
-
 
 //============================================
 //=====GET PROTECTED routes to load pages=====
@@ -260,7 +257,9 @@ router.get('/admincarousel', isLoggedIn, function(req, res) {
 router.get('/deletemessage/:messageId', isLoggedIn, function(req, res) {
 
   //Use Sequelize to find the relevant DB object
-  models.messages.findOne({ where: {id: req.params.messageId} })
+  // models.messages.findOne({ where: {id: req.params.messageId} })
+  models.messages.findOne({ 
+    where: {id: { [Op.eq]: req.params.messageId } } })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -273,7 +272,7 @@ router.get('/deletemessage/:messageId', isLoggedIn, function(req, res) {
 router.get('/deleteCarousel/:carouselId', isLoggedIn, function(req, res) {
 
   //Use Sequelize to find the relevant DB object
-  models.Carousel.findOne({ where: {id: req.params.carouselId} })
+  models.Carousel.findOne({ where: {id: { [Op.eq]: req.params.carouselId} } })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -286,7 +285,7 @@ router.get('/deleteCarousel/:carouselId', isLoggedIn, function(req, res) {
 router.get('/deleteBio/:bioId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Bio.findOne({ where: {id: req.params.bioId} })
+  models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -299,7 +298,7 @@ router.get('/deleteBio/:bioId', isLoggedIn, function(req, res) {
 router.get('/deleteResearch/:researchId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Research.findOne({ where: {id: req.params.researchId} })
+  models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -312,7 +311,7 @@ router.get('/deleteResearch/:researchId', isLoggedIn, function(req, res) {
 router.get('/deletePublication/:publicationId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Publications.findOne({ where: {id: req.params.publicationId} })
+  models.Publications.findOne({ where: {id: { [Op.eq]:req.params.publicationId} } } )
   .then(function(id) {
     //Delete the object
     id.destroy();
@@ -687,7 +686,7 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
       var currentDate = new Date();
 
       //Use Sequelize to find the record
-      models.Carousel.findOne({ where: {id: req.body.dbid} })
+      models.Carousel.findOne({ where: {id: { [Op.eq]: req.body.dbid} } } )
       
       .then(function(id) {
         //Update the data
@@ -711,7 +710,7 @@ router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), fun
     var currentDate = new Date();
 
     //Use Sequelize to push to DB
-    models.Carousel.findOne({ where: {id: req.body.dbid} })
+    models.Carousel.findOne({ where: {id: { [Op.eq]: req.body.dbid} } } )
       
     .then(function(id) {
       //Update the data
@@ -771,7 +770,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Bio.findOne({ where: {id: req.params.bioId} })
+      models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
       
       .then(function(id) {
         //Update the data
@@ -790,7 +789,7 @@ router.post('/updateBio/:bioId', isLoggedIn, upload.single('biopicture'), functi
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Bio.findOne({ where: {id: req.params.bioId} })
+    models.Bio.findOne({ where: {id: { [Op.eq]: req.params.bioId} } })
     
     .then(function(id) {
       //Update the data
@@ -846,7 +845,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Research.findOne({ where: {id: req.params.researchId} })
+      models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
       
       .then(function(id) {
         //Update the data
@@ -865,7 +864,7 @@ router.post('/updateResearch/:researchId', isLoggedIn, upload.single('researchpi
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Research.findOne({ where: {id: req.params.researchId} })
+    models.Research.findOne({ where: {id: { [Op.eq]: req.params.researchId} } })
     
     .then(function(id) {
       //Update the data
@@ -920,7 +919,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
       var currentDate = new Date();
 
       //Use Sequelize to find the relevant DB object
-      models.Publications.findOne({ where: {id: req.params.publicationId} })
+      models.Publications.findOne({ where: {id: { [Op.eq]: req.params.publicationId} } })
       
       .then(function(id) {
         //Update the data
@@ -940,7 +939,7 @@ router.post('/updatepublication/:publicationId', isLoggedIn, upload.single('publ
     var currentDate = new Date();
 
     //Use Sequelize to find the relevant DB object
-    models.Publications.findOne({ where: {id: req.params.publicationId} })
+    models.Publications.findOne({ where: {id: { [Op.eq]: req.params.publicationId} } } )
     
     .then(function(id) {
       //Update the data
@@ -968,7 +967,7 @@ function isLoggedIn(req, res, next) {
   res.redirect('/');
 }
 
-//Function to faciliate sendin email alerts
+//Function to faciliate sending email alerts
 function sendAutomaticEmail(mailOptions, req, res) {
   transporter.sendMail(mailOptions, function(error, info){
     if(error){

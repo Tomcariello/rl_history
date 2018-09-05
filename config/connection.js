@@ -1,14 +1,13 @@
-//Here is where you make the connection to the database and export and used by the O.R.M.
+//Make the connection to the database and export to be used by Sequelize
 
 var mysql = require('mysql');
 var connection;
 
-//If in heroku production environment, create connection based on that information
+//If in production environment, create connection based on the environment
 if (process.env.JAWSDB_URL) {
 	connection = mysql.createConnection(process.env.JAWSDB_URL);
 } else { //use local credentials
   connection = mysql.createConnection({
-  	
     port: 3306,
   	host: 'localhost',
   	user: 'root',
