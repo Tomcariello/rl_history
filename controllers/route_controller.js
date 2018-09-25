@@ -22,24 +22,25 @@ var S3_secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 //=====GET routes to load pages=====
 //==================================
 router.get('/', function(req, res) {
-  res.redirect('/index');
+  // res.redirect('/index');
+  res.redirect('/bio');
 });
 
 router.get('/index', function(req, res) {
   //Redirect to Bio page until the landing page is sorted out.
-  // res.redirect('/bio');
+  res.redirect('/bio');
  
-  models.Carousel.findAll({})
-  .then(function(data) {
-    var payload = {dynamicData: data}
+  // models.Carousel.findAll({})
+  // .then(function(data) {
+  //   var payload = {dynamicData: data}
 
-    //Add administrator credential to the created object
-    if (req.user) {
-      payload.dynamicData["administrator"] = true;
-    }
+  //   //Add administrator credential to the created object
+  //   if (req.user) {
+  //     payload.dynamicData["administrator"] = true;
+  //   }
     
-    res.render('index', {dynamicData: payload.dynamicData});
-  })
+  //   res.render('index', {dynamicData: payload.dynamicData});
+  // })
 });
 
 router.get('/bio', function(req, res) {
@@ -188,7 +189,8 @@ router.get('/contact', function(req, res) {
 });
 
 router.get('/register', function(req, res) {
-  res.render('register');
+  // res.render('register');
+  res.redirect('/');
 });
 
 router.get('/login', function(req, res) {
