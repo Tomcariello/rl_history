@@ -30,17 +30,17 @@ router.get('/index', function(req, res) {
   //Redirect to Bio page until the landing page is sorted out.
   res.redirect('/bio');
  
-  // models.Carousel.findAll({})
-  // .then(function(data) {
-  //   var payload = {dynamicData: data}
+  models.Carousel.findAll({})
+  .then(function(data) {
+    var payload = {dynamicData: data}
 
-  //   //Add administrator credential to the created object
-  //   if (req.user) {
-  //     payload.dynamicData["administrator"] = true;
-  //   }
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
     
-  //   res.render('index', {dynamicData: payload.dynamicData});
-  // })
+    // res.render('index', {dynamicData: payload.dynamicData});
+  })
 });
 
 router.get('/bio', function(req, res) {
