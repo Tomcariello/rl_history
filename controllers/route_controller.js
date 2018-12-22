@@ -189,8 +189,8 @@ router.get('/contact', function(req, res) {
 });
 
 router.get('/register', function(req, res) {
-  res.render('register');
-  // res.redirect('/');
+  // res.render('register');
+  res.redirect('/');
 });
 
 router.get('/login', function(req, res) {
