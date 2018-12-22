@@ -98,10 +98,14 @@ a:focus, a:hover {
 /*Profile Image properties*/
 .profile {
 	width: 100%;
-	display: block;
-	float: left;
+	max-width: 600px;
 }
-
+.image-container {
+	text-align: center;
+}
+.col-md-12.caption-container {
+    text-align: center;
+}
 .seperator {
 	border-left: 1px solid #cccccc;
 	border-right: 1px solid #cccccc;
