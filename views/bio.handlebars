@@ -1,19 +1,19 @@
 <section class="main">
   <div class='row'>
     {{#each dynamicData}}
-      <div class="col-xs-8">
+      <div class="col-md-8 col-xs-12">
         <div class='row'>
           <div class="col-xs-12 pageTitle">
             {{{this.header}}}
           </div>
         </div>
         <div class="row">
-          <div class="col-xs-12">
+          <div class="col-xs-12 image-container">
             <img class="profile" src="{{this.elementimage}}">
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 caption-container">
+          <div class="col-xs-12 caption-container">
             {{{this.imagecaption}}}
           </div>
         </div>
@@ -26,7 +26,7 @@
         </div>
       </div>
       {{/each}}
-    <div class="col-sm-4 twitterContainer">
+    <div class="col-md-4 col-xs-12 twitterContainer">
       {{!-- Built-in Twitter embed. Works well but limited control. --}}
       <a class="twitter-timeline" data-height="500" href="https://twitter.com/raechellutz?ref_src=twsrc%5Etfw" data-tweet-limit="5"></a>
       <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

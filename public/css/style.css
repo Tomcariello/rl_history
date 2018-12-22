@@ -103,7 +103,7 @@ a:focus, a:hover {
 .image-container {
 	text-align: center;
 }
-.col-md-12.caption-container {
+.caption-container {
     text-align: center;
 }
 .seperator {
@@ -112,10 +112,11 @@ a:focus, a:hover {
 }
 .main {
 	max-width: 960px;
+	padding: 0 20px;
 }
 section {
 	clear: both;
-	max-width: 900px
+	max-width: 900px;
 	min-height: 600px;
 	margin: auto;
 }
@@ -557,8 +558,21 @@ i.fab.fa-staylinked {
 .bioImageCaption {
     font-size: 18px;
 }
-.col-sm-4.twitterContainer {
+.twitterContainer {
     background-color: rgba(86, 171, 238, .25);
     padding: 10px;
-    border-radius: 8px;
+	border-radius: 8px;
+	text-align: center;
+}
+
+@media only screen and (max-width: 990px) {
+	#twitter-widget-0 {
+		width: 60% !important;
+	}
+	.twitterContainer {
+		background-color: rgba(86, 171, 238, .25);
+		padding: 10px;
+		border-radius: 0px;
+		text-align: center;
+	}
 }
