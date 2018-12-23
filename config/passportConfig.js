@@ -44,24 +44,26 @@ module.exports = function(passport) {
             if (err)
                 return done(err);
             if (rows.length) {
-                console.log('User with this email found. Redirecting to "Login" page');
+                // console.log('User with this email found. Redirecting to "Login" page');
                 return done(null, false);
             } else { // if there is no user with that username create the user
+
+                var currentDate = new Date();
 
                 var newUserMysql = {
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
                     email: email,
                     password: bcrypt.hashSync(password, bcrypt.genSaltSync(9), null),  // use the generateHash function in our user model
-                    //createdAt: CURDATE(), -- Not working
-                    //updatedAt: CURDATE() -- Not working
+                    createdAt: currentDate,
+                    updatedAt: currentDate
                  };
 
                 //Update string to populate registration information
-                var insertQuery = "INSERT INTO users (firstname, lastname, email, password) values (?,?,?,?)";
+                var insertQuery = "INSERT INTO users (firstname, lastname, email, password, createdAt, updatedAt) values (?,?,?,?,?,?)";
 
                 //Connect 
-                connection.query(insertQuery,[newUserMysql.firstname, newUserMysql.lastname, newUserMysql.email, newUserMysql.password],function(err, rows) {
+                connection.query(insertQuery,[newUserMysql.firstname, newUserMysql.lastname, newUserMysql.email, newUserMysql.password, newUserMysql.createdAt, newUserMysql.updatedAt],function(err, rows) {
                     newUserMysql.id = rows.insertId;
 
                     return done(null, newUserMysql);
