@@ -155,15 +155,41 @@ router.get('/teaching', function(req, res) {
       //Caption
       var decodeCaption = decodeURIComponent(payload.dynamicData[i].imagecaption);
       payload.dynamicData[i].imagecaption = decodeCaption;
-
     }
 
     //Add administrator credential to the created object
     if (req.user) {
       payload.dynamicData["administrator"] = true;
     }
-
     res.render('teaching', {dynamicData: payload.dynamicData});
+  })
+});
+
+router.get('/events', function(req, res) {
+  models.Events.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data}
+
+    //Loop through each returned object & decode data for rendering
+    for (i=0; i < payload.dynamicData.length; i++) {
+      //Body
+      var decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
+
+      //Header
+      var decodeHeadline = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadline;
+
+      //Caption
+      var decodeCaption = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaption;
+    }
+
+    //Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData["administrator"] = true;
+    }
+    res.render('events', {dynamicData: payload.dynamicData});
   })
 });
 
