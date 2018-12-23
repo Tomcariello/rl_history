@@ -64,8 +64,24 @@ $( document ).ready(function() {
 			socialMediaExpanded = false;
 			$('#socialMediaLinks').fadeOut("slow")
 		}
-		
 	})
+
+	// Look for stubbed URLs for in-page navigation
+	let anchorlinks = document.querySelectorAll('a[href^="#"]')
+
+	// Iterate through the nodelist to create a listener for each link	
+	for (let item of anchorlinks) {
+		item.addEventListener('click', (event)=> {
+			let hashval = item.getAttribute('href')
+			let target = document.querySelector(hashval)
+			target.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start'
+			})
+			history.pushState(null, null, hashval)
+			event.preventDefault();
+		})
+	}
 	
 
 });

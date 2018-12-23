@@ -564,7 +564,22 @@ i.fab.fa-staylinked {
 	border-radius: 8px;
 	text-align: center;
 }
-
+.bookreviewlink {
+    padding-top: 5px;
+}
+.articleslink {
+    border-bottom: 1px solid gray;
+    padding-bottom: 5px;
+}
+#jumplinks {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    width: 150px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+}
 @media only screen and (max-width: 990px) {
 	#twitter-widget-0 {
 		width: 60% !important;

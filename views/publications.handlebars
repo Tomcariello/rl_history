@@ -1,6 +1,6 @@
 <section class="main">
+  <div id="articles"></div>
   {{#each dynamicData}}
-
     {{#if this.isArticle}}
       <div class='row'>
         <div class="col-xs-12 pageTitle">
@@ -26,9 +26,10 @@
       </div>
     {{/if}}
   {{/each}}
+  
 
+  <div id="bookreviews"></div>
   {{#each dynamicData}}
-
     {{#if this.isBookReview}}
       <div class='row'>
         <div class="col-xs-12 pageTitle">
@@ -54,4 +55,16 @@
     {{/if}}
   {{/each}}
 
+  <div id="jumplinks">
+    <div class="articleslink">
+      <a href="#articles">
+        To Articles
+      </a>
+    </div>
+    <div class="bookreviewlink">
+      <a href="#bookreviews">
+        To Book Reviews
+      </a>
+    </div>
+  </div>
 </section>
