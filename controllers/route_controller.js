@@ -290,6 +290,15 @@ router.get('/adminteaching', isLoggedIn, function(req, res) {
     res.render('adminteaching', {dynamicData: payload.dynamicData});
   })
 });
+router.get('/adminevents', isLoggedIn, function(req, res) {
+  //Pull teaching data from database
+  models.Events.findAll({ })
+  .then(function(data) {
+    var payload = {dynamicData: data};
+    payload.dynamicData["administrator"] = true;
+    res.render('adminevents', {dynamicData: payload.dynamicData});
+  })
+});
 
 router.get('/admincarousel', isLoggedIn, function(req, res) {
   models.Carousel.findAll({})
@@ -384,6 +393,19 @@ router.get('/deleteTeaching/:teachingId', isLoggedIn, function(req, res) {
     id.destroy();
   }).then(function(){
     res.redirect('../adminteaching');
+  })
+})
+
+//Delete Teaching Object
+router.get('/deleteEvents/:eventId', isLoggedIn, function(req, res) {
+  
+  //Use Sequelize to find the relevant DB object
+  models.Events.findOne({ where: {id: req.params.eventId} })
+  .then(function(id) {
+    //Delete the object
+    id.destroy();
+  }).then(function(){
+    res.redirect('../adminevents');
   })
 })
 
@@ -800,6 +822,77 @@ router.post('/newTeaching', isLoggedIn, upload.single('teachingPicture'), functi
   }
 });
 
+router.post('/newEvents', isLoggedIn, upload.single('eventsPicture'), function(req, res) {
+  
+  var eventsImageToUpload;
+
+  //Check if image was upload & process it
+  if (typeof req.file !== "undefined") {
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+      }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to eventsImageToUpload
+      eventsImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to push to DB
+      models.Events.create({
+          elementimage: eventsImageToUpload,
+          header: req.body.NewHeader,
+          elementtext: req.body.NewBody,
+          imagecaption: req.body.NewCaption,
+          createdAt: currentDate,
+          updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminevents');
+      });
+    });
+  //only used if no picture uploaded
+  } else {
+    eventsImageToUpload = req.body.eventsImage; //carousel image was unchanged
+
+    var currentDate = new Date();
+
+    //Use Sequelize to push to DB
+    models.Events.create({
+      elementimage: eventsImageToUpload,
+      header: req.body.NewHeader,
+      elementtext: req.body.NewBody,
+      imagecaption: req.body.NewCaption,
+      createdAt: currentDate,
+      updatedAt: currentDate
+    }).then(function(){
+      res.redirect('../adminevents');
+    })
+    .catch(function(err) {
+      // print the error details
+      console.log(err);
+  });
+  }
+});
+
 //Process Carousel update requests
 router.post('/updateCarousel', isLoggedIn, upload.single('carouselPicture'), function(req, res) {
 
@@ -1102,6 +1195,81 @@ router.post('/updateTeaching/:teachingId', isLoggedIn, upload.single('teachingpi
         updatedAt: currentDate
       }).then(function(){
         res.redirect('../adminteaching');
+      })
+    })
+  }
+});
+
+//Process Events update requests
+router.post('/updateEvents/:eventsId', isLoggedIn, upload.single('eventspicture'), function(req, res) {
+  
+  //Previous settings. Used if not overwritten below.
+  var eventsPageImageToUpload = req.body.eventsPageImage; 
+
+  //Check if any image(s) were uploaded
+  if (typeof req.file !== "undefined") {
+
+    //Process file being uploaded
+    var fileName = req.file.originalname;
+    var fileType = req.file.mimetype;
+    var stream = fs.createReadStream(req.file.path) //Create "stream" of the file
+
+    //Create Amazon S3 specific object
+    var s3 = new aws.S3();
+
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: fileName, //This is what S3 will use to store the data uploaded.
+      Body: stream, //the actual *file* being uploaded
+      ContentType: fileType, //type of file being uploaded
+      ACL: 'public-read', //Set permissions so everyone can see the image
+      processData: false,
+      accessKeyId: S3_accessKeyId,
+      secretAccessKey: S3_secretAccessKey
+    }
+
+    s3.upload( params, function(err, data) {
+      if (err) {
+        console.log("err is " + err);
+      }
+
+      //Get S3 filepath & set it to eventsPageImageToUpload
+      eventsPageImageToUpload = data.Location
+
+      var currentDate = new Date();
+
+      //Use Sequelize to find the relevant DB object
+      models.Events.findOne({ where: {id: req.params.eventsId} })
+      
+      .then(function(id) {
+        //Update the data
+        id.updateAttributes({
+          elementtext: req.body['EventsText' + req.params.eventsId],
+          header: req.body['EventsHeader' + req.params.eventsId],
+          elementimage: eventsPageImageToUpload,
+          imagecaption: req.body['EventsCaption' + req.params.eventsId],
+          updatedAt: currentDate
+        }).then(function(){
+          res.redirect('../adminevents');
+        })
+      })
+    });
+  } else { //No image to upload, just update the text
+    var currentDate = new Date();
+
+    //Use Sequelize to find the relevant DB object
+    models.Events.findOne({ where: {id: req.params.eventsId} })
+    
+    .then(function(id) {
+      //Update the data
+      id.updateAttributes({
+        // optdes = req.body['optiondes' + optcount]
+        elementtext: req.body['EventsText' + req.params.eventsId],
+        header: req.body['EventsHeader' + req.params.eventsId],
+        imagecaption: req.body['EventsCaption' + req.params.eventsId],
+        updatedAt: currentDate
+      }).then(function(){
+        res.redirect('../adminevents');
       })
     })
   }
