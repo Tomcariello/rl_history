@@ -1,5 +1,19 @@
+
+  <div class="row" id="jumplinks">
+    <div class="col-xs-6 center-align underline-text">
+      <a href="#articles">
+        To Articles
+      </a>
+      </div>
+    <div class="col-xs-6 center-align underline-text">
+      <a href="#bookreviews">
+        To Book Reviews
+      </a>
+    </div>
+  </div>
+
 <section class="main">
-  <div id="articles"></div>
+  <div id="articles" class="jump-target"></div>
   {{#each dynamicData}}
     {{#if this.isArticle}}
       <div class='row'>
@@ -28,7 +42,7 @@
   {{/each}}
   
 
-  <div id="bookreviews"></div>
+  <div id="bookreviews" class="jump-target"></div>
   {{#each dynamicData}}
     {{#if this.isBookReview}}
       <div class='row'>
@@ -54,17 +68,4 @@
       </div>
     {{/if}}
   {{/each}}
-
-  {{!-- <div id="jumplinks">
-    <div class="articleslink">
-      <a href="#articles">
-        To Articles
-      </a>
-    </div>
-    <div class="bookreviewlink">
-      <a href="#bookreviews">
-        To Book Reviews
-      </a>
-    </div>
-  </div> --}}
 </section>

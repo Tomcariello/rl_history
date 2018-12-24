@@ -72,8 +72,8 @@ $( document ).ready(function() {
 	// Iterate through the nodelist to create a listener for each link	
 	for (let item of anchorlinks) {
 		item.addEventListener('click', (event)=> {
-			let hashval = item.getAttribute('href')
-			let target = document.querySelector(hashval)
+			let hashval = item.getAttribute('href');
+			let target = document.querySelector(hashval);
 			target.scrollIntoView({
 				behavior: 'smooth',
 				block: 'start'

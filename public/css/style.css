@@ -100,7 +100,7 @@ a:focus, a:hover {
 	width: 100%;
 	max-width: 600px;
 }
-.image-container {
+.image-container, .center-align {
 	text-align: center;
 }
 .caption-container {
@@ -439,19 +439,15 @@ hr {
 .portalButton {
     height: 150px;
     border: 1px solid black;
-    /* border-radius: 10px; */
     margin: 10px 0;
 	text-align: center;
-	/* border-top: 0; */
 }
-
 .messageSent {
     font-size: 28px;
     text-align: center;
     color: red;
     margin-bottom: 17px;
 }
-
 .hideElement {
 	display: none;
 }
@@ -572,13 +568,22 @@ i.fab.fa-staylinked {
     padding-bottom: 5px;
 }
 #jumplinks {
-    position: fixed;
-    top: 50px;
-    right: 50px;
-    width: 150px;
-    border: 1px solid gray;
-    border-radius: 5px;
     padding: 10px;
+    position: sticky;
+    top: 0;
+    background-color: #efefef;
+    z-index: 2;
+    font-style: italic;
+    font-weight: bold;
+    text-decoration: underline;
+}
+/* This allows the scrolltoview to correct for the fixed position header bar */
+.jump-target {
+	padding: 10px;
+	margin: -10px;
+}
+.underline-text {
+	text-decoration: underline !important;
 }
 @media only screen and (max-width: 990px) {
 	#twitter-widget-0 {
