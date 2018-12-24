@@ -569,7 +569,8 @@ i.fab.fa-staylinked {
 }
 #jumplinks {
     padding: 10px;
-    position: sticky;
+	position: webkit-sticky;
+	position: sticky;
     top: 0;
     background-color: #efefef;
     z-index: 2;
