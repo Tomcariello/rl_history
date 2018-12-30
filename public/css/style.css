@@ -1,37 +1,29 @@
 body {
     width:100%;
-    height: 100%;
-    background-color: #ffffff;
+    height: 100vh;
+	background-color: #f0f4f4;
     margin: 0;
-    padding: 0;
-	/* font-family: 'Open Sans Condensed', sans-serif; */
-	font-family: "Tahoma";
+	padding: 0;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 .container {
 	width: 100%;
 	background-repeat: repeat;
-	background-color: #ffffff;
+	background-color: #f0f4f4;
 	background-size: 100%;
 	padding: 0px;
 }
-
-.container>.navbar-collapse, .container-fluid>.navbar-collapse {
-    border-bottom: 3px solid #ffffff;
-}
-
 h1 {
 	line-height: 0;
 	border-bottom: none;
 }
-
 a {
 	text-decoration: none;
 	color:#000000;
 }
-
 a:focus, a:hover {
 	text-decoration: underline;
-	color:#000000;
+	color:#cccccc;
 }
 
 .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover, .navbar-default .navbar-nav>li>a:focus {
@@ -51,20 +43,20 @@ a:focus, a:hover {
 }
 .navbar .nav>li>a {
 	font-size: 18px;
-	padding-bottom: 0px
+	padding-bottom: 10px
  }
 .navbar .nav>li>a:hover {
+	padding-bottom: 8px;
 	border-bottom: 2px solid #ffffff;
+	/* text-decoration: underline; */
 }
 
 .navbarPageTitle {
-	color: #c09859;
-	/* font-family: "Tahoma"; */
-	font-family: "Tahoma";
+	color: #000000;
 	font-size: 36px;
     text-transform: none;
     text-decoration: none;
-    letter-spacing: 0px;
+    letter-spacing: -2px;
     font-weight: 400;
     font-style: normal;
 }
@@ -72,16 +64,14 @@ a:focus, a:hover {
 .navbar {
 	border-radius: 0px;
 }
-
 .navbar-default, .navbar-collapse {
-	background-color: #ffffff;
-	border-color: #ffffff;
+	background-color: #f0f4f4;
+	border: none;
 }
 .navbar-default .navbar-brand {
     color: #3e3f3a;
 }
 .navbarLinks {
-	font-family: "Tahoma";
     font-size: 14px;
     text-transform: capitalize;
     text-decoration: none;
@@ -93,7 +83,6 @@ a:focus, a:hover {
 }	
 .navbar-default .navbar-nav>li>a {
 	color: #000000;
-	font-family: "Tahoma";
 }
 /*Profile Image properties*/
 .profile {
@@ -165,7 +154,7 @@ footer {
 
 .foot {
 	margin-top: 20px;
-	font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+	font-family: 'Source Sans Pro', sans-serif;
 	font-size: 12px;
 	text-align: center;
 }
@@ -221,14 +210,13 @@ textarea {
 }
 
 button {
-	background-color: #ffffff;
+	background-color: #f0f4f4;
     color: #263333;
     border: 2px solid #000000;
     margin: 5px;
     font-style: normal;
     padding: 7px 35px;
     font-size: 15px;
-    font-family: "Tahoma";
 }
 
 button:hover {
@@ -314,7 +302,7 @@ button:hover {
  .carousel-caption.d-none.d-md-block {
     position: absolute;
     z-index: 10;
-	background-color: #ffffff;
+	background-color: #f0f4f4;
     opacity: .9;
 	color: #000000;
     text-align: center;
@@ -325,7 +313,7 @@ button:hover {
 
 /* Sets carousel slide area to white */
 .item.active {
-    background-color: #ffffff;
+    background-color: #f0f4f4;
 }
 
 .words {
@@ -369,7 +357,7 @@ hr {
 	line-height: 170%;
 	font-size: 22px;
 	margin-bottom: 10px;
-	font-family: tahoma;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 .formInput {
     width: 90%;
@@ -393,7 +381,7 @@ hr {
 	text-align: center;
 }
 .messageDisplay {
-	background-color: #ffffff;
+	background-color: #f0f4f4;
 	border-radius: 10px;
 }
 .CMSImage {
@@ -406,8 +394,7 @@ hr {
 	font-size: 26px;
 }
 .pageTitle {
-    color: #c09859;
-    font-family: "Tahoma";
+    color: #000000;
     font-size: 36px;
     text-transform: none;
     text-decoration: none;
@@ -423,8 +410,7 @@ hr {
 	margin-bottom: 20px;
 }
 .adminPortalCard {
-	color: #c09859;
-    font-family: "Tahoma";
+	color: #000000;
     font-size: 36px;
     text-transform: none;
     text-decoration: none;
@@ -510,7 +496,7 @@ input[name^=BioHeader] {
     border-radius: 50px;
     width: 50px;
     height: 50px;
-	background-color: #c09859;
+	background-color: #000000;
 	border: none;
 	color: #ffffff;
 	text-align: center;
@@ -538,7 +524,6 @@ input[name^=BioHeader] {
     font-style: normal;
     padding: 7px 35px;
     font-size: 15px;
-    font-family: "Tahoma";
 }
 .modal-dialog {
     width: 900px;
@@ -555,7 +540,7 @@ i.fab.fa-staylinked {
     font-size: 18px;
 }
 .twitterContainer {
-    background-color: rgba(86, 171, 238, .25);
+    background-color: rgba(224,224,224,1);
     padding: 10px;
 	border-radius: 8px;
 	text-align: center;
@@ -572,12 +557,17 @@ i.fab.fa-staylinked {
 	position: -webkit-sticky;
 	position: sticky;
     top: 0;
-    background-color: #efefef;
+    background-color: #000000;
     z-index: 2;
     font-style: italic;
     font-weight: bold;
-    text-decoration: underline;
+	text-decoration: underline;
+	border: 1px solid white;
 }
+.jumplink-text {
+	color: #ffffff;
+}
+
 /* This allows the scrolltoview to correct for the fixed position header bar */
 .jump-target {
 	padding: 10px;

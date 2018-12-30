@@ -2,34 +2,6 @@ var socialMediaExpanded = false;
 
 $( document ).ready(function() {
 
-	//Check contact form for contents before submitting
-	$('#contactSubmit').on('click',function() {
-		
-		if ($('#fname').val() != "") {
-			$('#fname').removeClass('formWarning');
-			if ($('#email').val() != "") {
-				$('#email').removeClass('formWarning');
-				if ($('#reason').val() != "--") {
-					$('#reason').removeClass('formWarning');
-					if ($('#message').val() != "") {
-						$('#message').removeClass('formWarning');
-						return true;
-					} else{
-						$('#message').addClass('formWarning');
-					}
-				} else {
-					$('#reason').addClass('formWarning');
-				}
-			} else {
-				$('#email').addClass('formWarning');
-			}
-		} else {
-			$('#fname').addClass('formWarning');
-		}
-			
-	return false;
-	})
-
 	//listen to registration form for validity as fields are populated
 	$("#fname" ).change(function() {
 	  validateRegistration();
