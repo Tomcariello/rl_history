@@ -67,37 +67,11 @@ function clearFields() {
 }
 
 function validateRegistration() {
-
-	//Refactor this code
-	if ($("#fname" ).val() != "") {
-		if ($("#lname" ).val() != "") {
-			$("#lname").css({"border-color":"initial"});
-			if ($("#email" ).val() != "") {
-				$("#email").css({"border-color":"initial"});
-				if ($("#password" ).val() != "") {
-					$("#password").css({"border-color":"initial"});
-					if ($("#password" ).val() == $("#confirmpassword" ).val()) {
-						$("#confirmpassword").css({"border-color":"initial"});
-						//display submitButton
-						$("#submitButton").css({"display":"inherit"});
-					} else {
-						$("#confirmpassword").css({"border":"1px solid red"});
-						hideSubmitButton();
-					}
-				} else {
-					$("#password").css({"border":"1px solid red"});
-					hideSubmitButton();
-				}
-			} else {
-				$("#email").css({"border":"1px solid red"});
-				hideSubmitButton();
-			}
-		} else {
-			$("#lname").css({"border":"1px solid red"});
-			hideSubmitButton();
-		}
+	//If passwords match
+	if ( $("#password").val() == $("#confirmpassword").val() && $("#password" ).val() != "") {
+		//display submitButton
+		$("#submitButton").css({"display":"inherit"});
 	} else {
-		$("#fname").css({"border":"1px solid red"});
 		hideSubmitButton();
 	}
 }
