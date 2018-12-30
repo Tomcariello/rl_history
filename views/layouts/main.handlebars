@@ -6,7 +6,6 @@
 
     <title>Raechel Lutz</title>
 
-    {{!-- <script src="https://use.fontawesome.com/c2ca09b5d8.js"></script> --}}
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="scripts/scripts.js"></script>
@@ -42,9 +41,6 @@
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            {{!-- <ul class="nav navbar-nav">
-            </ul> --}}
-              
             <ul class="nav navbar-nav navbar-right">
               {{#if dynamicData.administrator}}
                 <li>
@@ -57,8 +53,51 @@
               <li><a href="/bio" class="navbarLinks">Bio</a></li>
               <li><a href="/Research" class="navbarLinks">Current Research</a></li>
               <li><a href="/Teaching" class="navbarLinks">Teaching</a></li>
-              <li class="nav-item dropdown"><a href="/publications" class="navbarLinks">Publications</a></li>
+              <li><a href="/publications" class="navbarLinks">Publications</a></li>
               <li><a href="/contact" class="navbarLinks">Contact</a></li>
+
+              <li>
+                <div id="socialMediaContainer">
+                  <div id="socialMediaParent">
+                    <i class="fas fa-at"></i>
+                  </div>
+
+                  <div id="socialMediaLinks">
+                    <div class="socialMediaChild">
+                      <a href="https://www.linkedin.com/in/raechel-lutz-77091a12/" target='new'>
+                        <img class="socialMediaIcons" src="../../images/linkedin.png">
+                      </a>
+                    </div>
+                    <div class="socialMediaChild">
+                      <a href="https://classics-rutgers.academia.edu/RaechelLutz" target='new'>
+                        <img class="socialMediaIcons" src="../../images/academia.jpg">
+                      </a>
+                    </div>
+                    <div class="socialMediaChild">
+                      <a href="https://twitter.com/raechellutz" target='new'>
+                        <img class="socialMediaIcons" src="../../images/twitter.png">
+                      </a>
+                    </div>
+                  </div>
+
+                </div>
+              </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </ul>
           </div>
         </div>
@@ -68,35 +107,8 @@
 
 		{{{ body }}}
 
-
     <div class="footer">
       <p>Copyright 2018</p>
     </div>
-
-
-    <div id="socialMediaContainer">
-      <div id="socialMediaLinks">
-        <div class="socialMediaChild">
-          <a href="https://www.linkedin.com/in/raechel-lutz-77091a12/" target='new'>
-            <img class="socialMediaIcons" src="../../images/linkedin.png">
-          </a>
-        </div>
-        <div class="socialMediaChild">
-          <a href="https://classics-rutgers.academia.edu/RaechelLutz" target='new'>
-             <img class="socialMediaIcons" src="../../images/academia.jpg">
-          </a>
-        </div>
-        <div class="socialMediaChild">
-          <a href="https://twitter.com/raechellutz" target='new'>
-            <img class="socialMediaIcons" src="../../images/twitter.png">
-          </a>
-        </div>
-      </div>
-      <div id="socialMediaParent">
-        <i class="fab fa-staylinked"></i>
-      </div>
-    </div>
-
   </div>
-
 </body>

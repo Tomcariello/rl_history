@@ -34,7 +34,7 @@ $( document ).ready(function() {
 			$('#socialMediaLinks').fadeIn("slow")
 		} else {
 			socialMediaExpanded = false;
-			$('#socialMediaLinks').fadeOut("slow")
+			$('#socialMediaLinks').fadeOut("slow");
 		}
 	})
 
@@ -54,11 +54,7 @@ $( document ).ready(function() {
 			event.preventDefault();
 		})
 	}
-	
-
 });
-
-
 
 function clearFields() {
   //Clear fields on contact form
@@ -68,7 +64,6 @@ function clearFields() {
 
   //Thank user for the message
   alert("Thank you for your message.")
-
 }
 
 function validateRegistration() {
