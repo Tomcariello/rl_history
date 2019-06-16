@@ -27,8 +27,6 @@ var S3_secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 // });
 
 router.get('/', function(req, res) {
-  //Redirect to Bio page until the landing page is sorted out.
-  // res.redirect('/bio');
  
   models.Carousel.findAll({})
   .then(function(data) {
