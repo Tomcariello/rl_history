@@ -21,12 +21,12 @@ var S3_secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 //==================================
 //=====GET routes to load pages=====
 //==================================
-router.get('/', function(req, res) {
-  // res.redirect('/index');
-  res.redirect('/bio');
-});
+// router.get('/', function(req, res) {
+//   // res.redirect('/index');
+//   res.redirect('/bio');
+// });
 
-router.get('/carousel', function(req, res) {
+router.get('/', function(req, res) {
   //Redirect to Bio page until the landing page is sorted out.
   // res.redirect('/bio');
  
