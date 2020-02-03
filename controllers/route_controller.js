@@ -413,7 +413,7 @@ router.get('/deleteEvents/:eventId', isLoggedIn, function(req, res) {
 router.get('/deletePublication/:publicationId', isLoggedIn, function(req, res) {
   
   //Use Sequelize to find the relevant DB object
-  models.Publications.findOne({ where: {id: { [Op.eq]:req.params.publicationId} } } )
+  models.Publications.findOne({ where: {id: req.params.publicationId} } )
   .then(function(id) {
     //Delete the object
     id.destroy();
