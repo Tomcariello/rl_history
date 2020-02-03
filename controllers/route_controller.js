@@ -83,6 +83,7 @@ router.get('/publications', function(req, res) {
         payload.dynamicData[i].isArticle = true;
       } else {
         payload.dynamicData[i].isBookReview = true;
+        console.log('is book review')
       }
       
       //...& decode data for rendering
