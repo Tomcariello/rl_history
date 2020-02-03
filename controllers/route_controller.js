@@ -77,6 +77,7 @@ router.get('/publications', function(req, res) {
 
     //Loop through each returned object...
     for (i=0; i < payload.dynamicData.length; i++) {
+      console.log("decoding " + i)
       //...& add element to indicate if it is a book review or article
       if (payload.dynamicData[i].category == "article") {
         payload.dynamicData[i].isArticle = true;
