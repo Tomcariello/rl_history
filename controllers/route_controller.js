@@ -92,37 +92,38 @@ app.get('/bio', (req, res) => {
 });
 
 app.get('/publications', (req, res) => {
-  models.Publications.findAll({})
-    .then((data) => {
-      const payload = { dynamicData: data };
+  models.Publications.findAll({
+    order: [['id', 'DESC']],
+  }).then((data) => {
+    const payload = { dynamicData: data };
 
-      // Loop through each returned object...
-      for (let i = 0; i < payload.dynamicData.length; i += 1) {
-        // ...& add element to indicate if it is a book review or article
-        if (payload.dynamicData[i].category == 'article') {
-          payload.dynamicData[i].isArticle = true;
-        } else {
-          payload.dynamicData[i].isBookReview = true;
-        }
-
-        // ...& decode data for rendering
-        const decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
-        payload.dynamicData[i].elementtext = decodeElementText;
-
-        const decodeHeadlineText = decodeURIComponent(payload.dynamicData[i].header);
-        payload.dynamicData[i].header = decodeHeadlineText;
-
-        const decodeCaptionText = decodeURIComponent(payload.dynamicData[i].imagecaption);
-        payload.dynamicData[i].imagecaption = decodeCaptionText;
+    // Loop through each returned object...
+    for (let i = 0; i < payload.dynamicData.length; i += 1) {
+      // ...& add element to indicate if it is a book review or article
+      if (payload.dynamicData[i].category == 'article') {
+        payload.dynamicData[i].isArticle = true;
+      } else {
+        payload.dynamicData[i].isBookReview = true;
       }
 
-      // Add administrator credential to the created object
-      if (req.user) {
-        payload.dynamicData.administrator = true;
-      }
+      // ...& decode data for rendering
+      const decodeElementText = decodeURIComponent(payload.dynamicData[i].elementtext);
+      payload.dynamicData[i].elementtext = decodeElementText;
 
-      res.render('publications', { dynamicData: payload.dynamicData });
-    });
+      const decodeHeadlineText = decodeURIComponent(payload.dynamicData[i].header);
+      payload.dynamicData[i].header = decodeHeadlineText;
+
+      const decodeCaptionText = decodeURIComponent(payload.dynamicData[i].imagecaption);
+      payload.dynamicData[i].imagecaption = decodeCaptionText;
+    }
+
+    // Add administrator credential to the created object
+    if (req.user) {
+      payload.dynamicData.administrator = true;
+    }
+
+    res.render('publications', { dynamicData: payload.dynamicData });
+  });
 });
 
 app.get('/research', (req, res) => {
