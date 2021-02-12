@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function(sequelize, DataTypes) {
-  var Publications = sequelize.define('Publications', {
+  const Publications = sequelize.define('Publications', {
     header: DataTypes.STRING,
     elementtext: DataTypes.STRING,
     elementimage: DataTypes.STRING,
@@ -10,9 +10,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-      }
+      },
     },
-  freezeTableName: true
+    freezeTableName: true,
   });
   return Publications;
 };
