@@ -56,19 +56,19 @@ $(document).ready(function() {
 });
 
 function clearFields() {
-  //Clear fields on contact form
+  // Clear fields on contact form
   document.getElementById('fname').value = '';
   document.getElementById('email').value = '';
   document.getElementById('message').value = '';
 
-  //Thank user for the message
-  alert("Thank you for your message.")
+  // Thank user for the message
+  alert('Thank you for your message.')
 }
 
 function validateRegistration() {
-	//If passwords match
-	if ( $('#password').val() == $('#confirmpassword'.val() && $('#password').val() != "") {
-		//display submitButton
+	// If passwords match
+	if ( $('#password').val() == $('#confirmpassword').val() && $('#password').val() != '') {
+		// display submitButton
 		$('#submitButton').css({"display":"inherit"});
 	} else {
 		hideSubmitButton();
@@ -79,13 +79,10 @@ function hideSubmitButton() {
 	$('#submitButton').css({"display":"none"});	
 }
 
-//Listen to update schedule page submit button
+// Listen to update schedule page submit button
 function validateUpdateScheduleForm(event) {
-
-	var scheduleFormattedData = $('#summernoteSchedule').summernote('code');
-	var scheduleEncodedData = encodeURI(scheduleFormattedData);
-
+	const scheduleFormattedData = $('#summernoteSchedule').summernote('code');
+	const scheduleEncodedData = encodeURI(scheduleFormattedData);
 	$('#ScheduleText').val(scheduleEncodedData);
-
 	return true;
 }
